@@ -11,3 +11,4 @@ Maintainer: Zach Shao (zach.shao@gmail.com)
 ### Usage
 
 ### To-do list
+- copyright
