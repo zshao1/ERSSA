@@ -16,10 +16,10 @@ The filtered count table is returned.
 }
 \description{
 \code{count_filter} Function filters the RNA-seq count table to remove
-low expression genes at an user-defined averaged count cutoff 
+low expression genes at an user-defined averaged count cutoff
 (Default=10).
 }
 \examples{
-\dontrun{count_filter(count_table, cutoff=10)}
+count_filter(count_table, cutoff=10)
 
 }
