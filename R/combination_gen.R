@@ -28,18 +28,24 @@
 #' Selected combinations of samples at each replicate number are then
 #' returned.
 #'
-#' @param condition_table A condition table with two columns and each sample as a row. Column 1 contains sample names and Column 2 contains sample condition e.g. Control, Treatment.
+#' @param condition_table A condition table with two columns and each sample as a row. Column 1 contains sample names and Column 2 contains sample condition (e.g. Control, Treatment).
 #' @param n_repetition The number of count tables to generate at each replicate number. DEFAULT = 20.
+#' @param seed An optional seed to generate reproducible random sampling. DEFAULT = No seed
 #'
-#' @return A list of vector of sample combinations. Top list has names corresponding to each replicate number. Next, at each replicate number is a vector of unique combinations. Each combination is a single string with sample name separated by semicolon.
+#' @return A list of character vectors containing sample combinations. Each element in the list corresponds to a replicate level. Each combination within the character vector is a single string with sample names separated by semicolon.
 #'
 #' @examples
-#' comb_gen(condition_table, n_repetition=20)
+#' combinations = comb_gen(condition_table, n_repetition=20)
 #'
 #' @export
 
 
-comb_gen = function(condition_table, n_repetition=20){
+comb_gen = function(condition_table, n_repetition=20, seed){
+
+  #set seed if a seed was provided
+  if (!missing(seed)){
+    set.seed(seed)
+  }
 
   #rename input condition table column name
   colnames(condition_table) = c('sample_name','condition')
@@ -57,20 +63,12 @@ comb_gen = function(condition_table, n_repetition=20){
     stop('Sample name cannot contain semicolon.')
   }
 
-  #total replicates per condition and minimum of the two
-  cond1_n = sum(condition_table$condition == unique_conditions[1])
-  cond2_n = sum(condition_table$condition == unique_conditions[2])
-  rep_min = min(c(cond1_n, cond2_n))
-
-  #replicate series
-  rep_series = seq(2, rep_min-1)
-
   #samples names associated with each condition
   cond1_name = as.character(condition_table$sample_name[which(condition_table$condition == unique_conditions[1])])
   cond2_name = as.character(condition_table$sample_name[which(condition_table$condition == unique_conditions[2])])
   min_sample_size = min(length(cond1_name),length(cond2_name))
 
-  #master list with replicate as names with each contain vector of combinations. To be populated in the for loop below
+  #master list with replicate as names with each containing vector of combinations. To be populated in the for loop below
   replicate_combs = list()
 
   #loop through replicate levels and generate combinations
@@ -85,7 +83,7 @@ comb_gen = function(condition_table, n_repetition=20){
     }
 
     #generate comb_rep number of combinations for condition 1
-    comb_cond1_list = c() #declare empty list to store combinations
+    comb_cond1_list = c() #declare empty vector to store combinations
 
     while (length(comb_cond1_list)!=comb_rep){
       comb_cond1 = sort(sample(cond1_name, rep)) #random samping without replacement
@@ -105,7 +103,7 @@ comb_gen = function(condition_table, n_repetition=20){
     }
 
     #generate comb_rep number of combinations for condition 2
-    comb_cond2_list = c() #declare empty list to store combinations
+    comb_cond2_list = c() #declare empty vector to store combinations
 
     while (length(comb_cond2_list)!=comb_rep){
       comb_cond2 = sort(sample(cond2_name, rep)) #random samping without replacement
@@ -124,7 +122,7 @@ comb_gen = function(condition_table, n_repetition=20){
     }
 
     #generate comb_rep number of combinations of condition 1 and 2
-    comb_merged_list = c() #declare empty list to store combinations
+    comb_merged_list = c() #declare empty vector to store combinations
 
     while (length(comb_merged_list)!=comb_rep){
       comb_merged = as.character(sample(comb_cond1_list, 1)) #random samping without replacement
@@ -135,7 +133,7 @@ comb_gen = function(condition_table, n_repetition=20){
         comb_merged_list = c(comb_merged_list, comb_merged_string) #add to combination list if unique
       }
     }
-    replicate_combs[[rep]]=comb_merged_list
+    replicate_combs[[paste0('rep_',rep)]]=comb_merged_list
   }
 
 

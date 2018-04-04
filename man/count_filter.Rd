@@ -4,22 +4,22 @@
 \alias{count_filter}
 \title{Filter RNA-seq expression table}
 \usage{
-count_filter(count_table, cutoff = 10)
+count_filter(count_table, cutoff = 1)
 }
 \arguments{
 \item{count_table}{Input RNA-seq count table.}
 
-\item{cutoff}{Any gene with average count below this number will be filtered.}
+\item{cutoff}{Any gene with average CPM below this cutoff value will be filtered out.}
 }
 \value{
 The filtered count table is returned.
 }
 \description{
-\code{count_filter} Function filters the RNA-seq count table to remove
-low expression genes at an user-defined averaged count cutoff
-(Default=10).
+\code{count_filter} function filters the RNA-seq count table to remove
+low expression genes at an defined average CPM cutoff
+(Default=1).
 }
 \examples{
-count_filter(count_table, cutoff=10)
+count_table.filtered = count_filter(count_table, cutoff=1)
 
 }
