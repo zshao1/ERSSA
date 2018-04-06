@@ -2,8 +2,8 @@ Package: ERSSA
 Title: Empirical RNA-seq Sample Size Analysis
 Version: 0.0.1
 Date: 2018-01-17
-Author: Zach Shao [aut, cre]
-Maintainer: Zach Shao <Zixuanshao.zach@gmail.com>
+Author: Zixuan Shao [aut, cre]
+Maintainer: Zixuan Shao <Zixuanshao.zach@gmail.com>
 Description: The ERSSA package takes user supplied RNA-seq differential expression 
 	dataset and calculates the number of differentially expressed genes at varying 
 	biological replicate number. This allows the user to determine, without providing

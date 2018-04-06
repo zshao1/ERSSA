@@ -4,8 +4,8 @@
 \alias{count_table.filtered}
 \title{Example count table of GTEx RNA-seq experiment, fitered by count_filter function}
 \description{
-Count table is filtered version of example count_table. Contain 16766 genes that
-pass the filter.
+A filtered version of the example count_table. Contains
+16766 genes that passed the averaged CPM=1 filter.
 }
 \references{
 \url{https://jhubiostatistics.shinyapps.io/recount/}

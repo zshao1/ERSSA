@@ -5,7 +5,8 @@
 \title{Example count table of GTEx RNA-seq experiment}
 \description{
 Count table generated using data downloaded from Recount2 website
-that processed Raw GTEx dataset.
+that processed Raw GTEx dataset. Table has samples on columns and genes
+on rows.
 }
 \references{
 \url{https://jhubiostatistics.shinyapps.io/recount/}
