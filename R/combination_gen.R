@@ -28,20 +28,32 @@
 #' Selected combinations of samples at each replicate number are then
 #' returned. Combinations are also saved as a table to the drive.
 #'
-#' @param condition_table A condition table with two columns and each sample as a row. Column 1 contains sample names and Column 2 contains sample condition (e.g. Control, Treatment).
-#' @param n_repetition The number of maximum unique combinations to generate at each replicate level. More tests will be performed with a bigger value, but run time also increases linearly. Default set to 20 unique combinations at maximum.
-#' @param seed An optional seed to generate reproducible random sampling. DEFAULT = No seed.
-#' @param path The path to which the combinations will be saved as a csv table. Default to current working directory.
+#' @param condition_table A condition table with two columns and each sample
+#' as a row. Column 1 contains sample names and Column 2 contains sample
+#' condition (e.g. Control, Treatment).
+#' @param n_repetition The number of maximum unique combinations to generate
+#' at each replicate level. More tests will be performed with a bigger value,
+#' but run time also increases linearly. Default set to 20 unique combinations
+#' at maximum.
+#' @param seed An optional seed to generate reproducible random sampling.
+#' DEFAULT = No seed.
+#' @param path The path to which the combinations will be saved as a csv
+#' table. Default to current working directory.
 #'
-#' @return A list of character vectors containing sample combinations. Each element in the list corresponds to a replicate level. Each combination within the character vector is a single string with sample names separated by semicolon.
+#' @return A list of character vectors containing sample combinations. Each
+#' element in the list corresponds to a replicate level. Each combination
+#' within the character vector is a single string with sample names separated
+#' by semicolon.
 #'
 #' @author Zixuan Shao, \email{Zixuanshao.zach@@gmail.com}
 #'
 #' @examples
 #' #Use example condition_table
-#' data(condition_table, package = "ERSSA")
+#' #only 5000 genes and 4 replicates tested to speed up runtime
+#' data(condition_table.partial, package = "ERSSA")
 #'
-#' combinations = comb_gen(condition_table, n_repetition=20, seed=1)
+#' combinations.partial = comb_gen(condition_table.partial, n_repetition=20,
+#' seed=1)
 #'
 #' @export
 
@@ -51,6 +63,8 @@ comb_gen = function(condition_table=NULL, n_repetition=20, seed=NULL, path='.'){
   #check all required arguments supplied
   if (is.null(condition_table)){
     stop('Missing required condition_table argument in comb_gen function')
+  } else if (!(is.data.frame(condition_table))){
+    stop('condition_table is not an expected data.frame object')
   }
 
   #set seed if a seed was provided
@@ -75,11 +89,14 @@ comb_gen = function(condition_table=NULL, n_repetition=20, seed=NULL, path='.'){
   }
 
   #samples names associated with each condition
-  cond1_name = as.character(condition_table$sample_name[which(condition_table$condition == unique_conditions[1])])
-  cond2_name = as.character(condition_table$sample_name[which(condition_table$condition == unique_conditions[2])])
+  cond1_name = as.character(condition_table$sample_name[
+    which(condition_table$condition == unique_conditions[1])])
+  cond2_name = as.character(condition_table$sample_name[
+    which(condition_table$condition == unique_conditions[2])])
   min_sample_size = min(length(cond1_name),length(cond2_name))
 
-  #master list with replicate as names with each containing vector of combinations. To be populated in the for loop below
+  #master list with replicate as names with each containing vector of
+  #combinations. To be populated in the for loop below
   replicate_combs = list()
 
   #loop through replicate levels and generate combinations
@@ -97,11 +114,14 @@ comb_gen = function(condition_table=NULL, n_repetition=20, seed=NULL, path='.'){
     comb_cond1_list = c() #declare empty vector to store combinations
 
     while (length(comb_cond1_list)!=comb_rep){
-      comb_cond1 = sort(sample(cond1_name, rep)) #random samping without replacement
-      comb_cond1_string = paste(as.character(comb_cond1), collapse=';') #collapse into one string
+      #random samping without replacement
+      comb_cond1 = sort(sample(cond1_name, rep))
+      #collapse into one string
+      comb_cond1_string = paste(as.character(comb_cond1), collapse=';')
 
       if (!(comb_cond1_string %in% comb_cond1_list)) {
-        comb_cond1_list = c(comb_cond1_list, comb_cond1_string) #add to combination list if string is unique
+        #add to combination list if string is unique
+        comb_cond1_list = c(comb_cond1_list, comb_cond1_string)
       }
     }
 
@@ -117,11 +137,14 @@ comb_gen = function(condition_table=NULL, n_repetition=20, seed=NULL, path='.'){
     comb_cond2_list = c() #declare empty vector to store combinations
 
     while (length(comb_cond2_list)!=comb_rep){
-      comb_cond2 = sort(sample(cond2_name, rep)) #random samping without replacement
-      comb_cond2_string = paste(as.character(comb_cond2), collapse=';') #collapse into one string
+      #random samping without replacement
+      comb_cond2 = sort(sample(cond2_name, rep))
+      #collapse into one string
+      comb_cond2_string = paste(as.character(comb_cond2), collapse=';')
 
       if (!(comb_cond2_string %in% comb_cond2_list)) {
-        comb_cond2_list = c(comb_cond2_list, comb_cond2_string) #add to combination list if unique
+        #add to combination list if unique
+        comb_cond2_list = c(comb_cond2_list, comb_cond2_string)
       }
     }
 
@@ -136,12 +159,15 @@ comb_gen = function(condition_table=NULL, n_repetition=20, seed=NULL, path='.'){
     comb_merged_list = c() #declare empty vector to store combinations
 
     while (length(comb_merged_list)!=comb_rep){
-      comb_merged = as.character(sample(comb_cond1_list, 1)) #random samping without replacement
+      #random samping without replacement
+      comb_merged = as.character(sample(comb_cond1_list, 1))
       comb_merged = c(comb_merged, as.character(sample(comb_cond2_list,1)))
-      comb_merged_string = paste(comb_merged, collapse=';') #collapse into one string
+      #collapse into one string
+      comb_merged_string = paste(comb_merged, collapse=';')
 
       if (!(comb_merged_string %in% comb_merged_list)) {
-        comb_merged_list = c(comb_merged_list, comb_merged_string) #add to combination list if unique
+        #add to combination list if unique
+        comb_merged_list = c(comb_merged_list, comb_merged_string)
       }
     }
     replicate_combs[[paste0('rep_',rep)]]=comb_merged_list
@@ -153,7 +179,8 @@ comb_gen = function(condition_table=NULL, n_repetition=20, seed=NULL, path='.'){
   folder_path = file.path(path)
   dir.create(folder_path, showWarnings = FALSE)
 
-  utils::write.csv(replicate_combs, file.path(path,'Sample_combinations.csv'))
+  utils::write.csv(plyr::ldply(replicate_combs, cbind),
+                   file.path(path,'Sample_combinations.csv'))
   return(replicate_combs)
 }
 

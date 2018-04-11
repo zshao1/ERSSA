@@ -1,21 +1,28 @@
 Package: ERSSA
+Type: Package
 Title: Empirical RNA-seq Sample Size Analysis
-Version: 0.0.1
-Date: 2018-01-17
+Version: 0.99.0
+Date: 2018-04-10
 Author: Zixuan Shao [aut, cre]
 Maintainer: Zixuan Shao <Zixuanshao.zach@gmail.com>
 Description: The ERSSA package takes user supplied RNA-seq differential expression 
 	dataset and calculates the number of differentially expressed genes at varying 
-	biological replicate number. This allows the user to determine, without providing
-	any prior assumption, whether sufficient differential detection has been acheived 
+	biological replicate levels. This allows the user to determine, without relying on
+	any a priori assumptions, whether sufficient differential detection has been acheived 
 	with their RNA-seq dataset.
 Depends: R (>= 3.4.3)
 Imports: 
 	edgeR (>= 3.20.6),
 	DESeq2 (>= 1.18.1),
 	ggplot2 (>= 2.2.1),
+	RColorBrewer (>= 1.1-2),
+	plyr (>= 1.8.4),
+	BiocParallel (>= 1.12.0),
+	grDevices,
 	stats,
 	utils
+Suggests: knitr
+VignetteBuilder: knitr
 biocViews: GeneExpression, Transcription, DifferentialExpression, RNASeq, MultipleComparison, QualityControl
 License: GPL-3 | file LICENSE
 Encoding: UTF-8

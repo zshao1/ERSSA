@@ -8,8 +8,10 @@
 #' The filtered count table is saved to the drive in a file named
 #' "filtered_counts.csv".
 #'
-#' @param count_table A RNA-seq count matrix with genes on each row and samples on each column.
-#' @param cutoff Any gene with average CPM below this cutoff value will be filtered out.
+#' @param count_table A RNA-seq count matrix with genes on each row and samples
+#' on each column.
+#' @param cutoff Any gene with average CPM below this cutoff value will be
+#' filtered out.
 #' @param path Path to save the filtered count table
 #'
 #' @return The filtered count table.
@@ -18,10 +20,11 @@
 #'
 #' @examples
 #' #load simple GTeX example count table
-#' data(count_table, package = "ERSSA")
+#' #only 5000 genes and 4 replicates tested to speed up runtime
+#' data(count_table.partial, package = "ERSSA")
 #'
 #' #filter the counts
-#' count_table.filtered = count_filter(count_table)
+#' count_table.filtered.partial = count_filter(count_table.partial)
 #'
 #' @export
 
@@ -31,6 +34,12 @@ count_filter = function(count_table=NULL, cutoff=1, path='.'){
   #check all required arguments supplied
   if (is.null(count_table)){
     stop('Missing required count_table argument in count_filter function')
+  } else if (!(is.data.frame(count_table))){
+    stop('count_table is not an expected data.frame object')
+  } else if (length(unique(sapply(count_table, class)))!=1){
+    stop('More than one data type detected in count table, please make sure
+         count table contains only numbers and that the list of gene names is
+         the data.frame index')
   }
 
   cpm_table = t(t(count_table)*1000000/colSums(count_table))

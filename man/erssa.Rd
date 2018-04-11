@@ -4,35 +4,63 @@
 \alias{erssa}
 \title{Empirical RNA-seq Sample Size Analysis}
 \usage{
-erssa(count_table = NULL, condition_table = NULL, DE_software = "edgeR",
-  DE_ctrl_cond = NULL, DE_cutoff_stat = 0.05, DE_cutoff_Abs_logFC = 1,
-  DE_save_table = FALSE, path = ".", filter_cutoff = 1,
-  counts_filtered = FALSE, comb_gen_seed = NULL, comb_gen_repeat = 20)
+erssa(count_table = NULL, condition_table = NULL, DE_ctrl_cond = NULL,
+  comb_gen_seed = NULL, filter_cutoff = 1, counts_filtered = FALSE,
+  comb_gen_repeat = 20, DE_software = "edgeR", DE_cutoff_stat = 0.05,
+  DE_cutoff_Abs_logFC = 1, DE_save_table = FALSE,
+  marginalPlot_stat = "Mean", path = ".", num_workers = 1)
 }
 \arguments{
-\item{count_table}{A RNA-seq count matrix with genes on each row and samples on each column. If count_table has already been filtered to remove non- or low-expressing genes, then counts_filtered argument should be changed to TRUE.}
+\item{count_table}{A RNA-seq count matrix with genes on each row and samples
+on each column. If count_table has already been filtered to remove non- or
+low-expressing genes, then counts_filtered argument should be changed to
+TRUE.}
 
-\item{condition_table}{A condition table with two columns and each sample as a row. Column 1 contains sample names and Column 2 contains sample condition (e.g. Control, Treatment).}
+\item{condition_table}{A condition table with two columns and each sample as
+a row. Column 1 contains sample names and Column 2 contains sample
+conditions (e.g. Control, Treatment).}
 
-\item{DE_software}{The name of DE analysis software to use. Current options include "edgeR" and "DESeq2". Default to "edgeR".}
+\item{DE_ctrl_cond}{The name of control condition in the comparison. Must be
+one of the two conditions in the condition table.}
 
-\item{DE_ctrl_cond}{The name of control condition in the comparison. Most be one of the two conditions in the condition table.}
+\item{comb_gen_seed}{To generate unique combinations of samples at each
+replicate level, a random process is employed. The seed can be set for
+reproducible combination generation. Default to no seed.}
 
-\item{DE_cutoff_stat}{The cutoff in FDR or adjusted p-value used to determine whether gene is differentially expressed. Genes with lower FDR or adjusted p-value pass the cutoff. Default = 0.05.}
+\item{filter_cutoff}{The average CPM threshold set for filtering genes.
+Default to 1.}
 
-\item{DE_cutoff_Abs_logFC}{The cutoff in abs(log2FoldChange) for differential expression consideration. Genes with higher abs(log2FoldChange) pass the cutoff. Default = 1.}
+\item{counts_filtered}{Boolean. Whether count table has already been
+filtered. Default = FALSE with the function run filtering by average CPM
+at the cutoff specified by filter_cutoff value.}
 
-\item{DE_save_table}{Boolean. The results of differential expression tests can be saved to the drive for further analysis. Default setting is this is turned off to save drive space. Default = FALSE.}
+\item{comb_gen_repeat}{The number of maximum unique combinations to generate
+at each replicate level. More tests will be performed with a bigger value,
+but run time also increases linearly. Default set to 20 unique combinations
+at maximum.}
 
-\item{path}{The path to which the plots, results will be saved. Default to current working directory.}
+\item{DE_software}{The name of DE analysis software to use. Current options
+include "edgeR" and "DESeq2". Default to "edgeR".}
 
-\item{filter_cutoff}{The average CPM threshold set for filtering genes. Default to 1.}
+\item{DE_cutoff_stat}{The cutoff in FDR or adjusted p-value used to
+determine whether a gene is differentially expressed. Genes with lower
+FDR or adjusted p-value pass the cutoff. Default = 0.05.}
 
-\item{counts_filtered}{Boolean. Whether count table has already been filtered. Default to FALSE and running filtering by average CPM at the cutoff specified by filter_cutoff value.}
+\item{DE_cutoff_Abs_logFC}{The cutoff in abs(log2FoldChange) for differential
+expression consideration. Genes with higher abs(log2FoldChange) pass the
+cutoff. Default = 1.}
 
-\item{comb_gen_seed}{To generate unique combination of samples at each replicate level, a random process is employed. The seed can be set for reproducible combination generation. Default to no seed.}
+\item{DE_save_table}{Boolean. The results of differential expression tests
+can be saved to the drive for further analysis. Default setting does not
+save the results to save drive space. Default = FALSE.}
 
-\item{comb_gen_repeat}{The number of maximum unique combinations to generate at each replicate level. More tests will be performed with a larger value, but run time also increases linearly. Default set to 20 unique combinations at maximum.}
+\item{marginalPlot_stat}{The statistic used for plotting of values in
+marginal plot function. Options include "Mean", "Median". Default='mean'.}
+
+\item{path}{The path to which the plots and results will be saved. Default
+to current working directory.}
+
+\item{num_workers}{Number of nodes to use for parallel computing the DE tests}
 }
 \value{
 A list of objects generated during the analysis is returned:
@@ -40,30 +68,78 @@ A list of objects generated during the analysis is returned:
  \item{count_table.filtered}{filtered count table}
  \item{samp.name.comb}{the samples involved in each statistical test}
  \item{list.of.DE.genes}{list of DE genes in each statistical test}
- \item{gg.dotplot.obj}{a list of objects that can be used to recreate the dot plot. Can be used for further modification of the plot}
+ \item{gg.dotplot.obj}{a list of objects that can be used to recreate the
+ dot plot. Can be used for further modification of the plot}
 }
 }
 \description{
-ERSSA is a package designed to test whether an currently available RNA-seq dataset has sufficient biological replicates to detect the majority of differentially expressed (DE) genes between two conditions. Base on the number of biological replicates available, the algorithm subsamples at step-wise replicate levels and uses existing differentially expression analysis softwares (e.g. edgeR and DESeq2) to identify the number of DE genes. This process is repeated for a given number of times with unique combinations of subsampled samples to generate a distribution of DE genes at each replicate level. Compare to existing RNA-seq sample size analysis algorithms, ERSSA does not rely on any a priori assumptions about the dataset, but rather uses an user-supplied pilot RNA-seq dataset to determine if the current replicate level is sufficient to detect a majority of major DE genes.
+ERSSA is a package designed to test whether an currently available RNA-seq
+dataset has sufficient biological replicates to detect a majority of
+differentially expressed (DE) genes between two conditions. Base on the
+number of biological replicates available, the algorithm subsamples at
+step-wise replicate levels and uses existing differentially expression
+analysis softwares (e.g. edgeR and DESeq2) to identify the number of DE
+genes. This process is repeated for a given number of times with unique
+combinations of samples to generate a distribution of DE genes at each
+replicate level. Compare to existing RNA-seq sample size analysis
+algorithms, ERSSA does not rely on any a priori assumptions about the
+dataset, but rather uses an user-supplied pilot RNA-seq dataset to
+determine whether the current replicate level is sufficient to detect a
+majority of DE genes.
 }
 \details{
-\code{erssa} function is a wrapper that calls several ERSSA functions in sequence. For additional description of the functions called, please see their respective manual.
+\code{erssa} function is a wrapper that calls several ERSSA functions in
+sequence. For additional description of the functions called, please see
+their respective manual.
 
-For the majority of current RNA-seq analysis, RNA-seq samples are aligned to the reference, followed by running quantification packages to generate count tables. ERSSA can either take unfiltered count table by default and filter by average CPM value to remove non- to low-expressing genes. Alternatively, a filtered count table can be supplied and filtering will be skipped.
+For the majority of current RNA-seq analysis, RNA-seq samples are aligned to
+the reference, followed by running quantification packages to generate
+count tables. ERSSA can then take the unfiltered count table and remove non-
+to low-expressing genes with count_filter function. Alternatively, a
+filtered count table can be supplied and filtering will be skipped.
 
-Next, unique combinations of samples at various biological replicate levels will be generated and passed to a differential expression analysis software for statistical testing for DE genes. The pipeline currently supports edgeR and DESeq2, but additional software support can be easily added.
+Next, unique combinations of samples at various biological replicate levels
+will be generated by comb_gen function and passed to a differential
+expression analysis software for statistical testing for DE genes. The
+pipeline currently supports edgeR and DESeq2, but additional software
+support can be easily added.
 
-Finally, the result trend in DE gene identification can be visualized by plots and the user can determine whether the desirable level of DE gene discovery has been reached.
+The generated differential expression results are then analyzed by several
+plotting functions briefly described here. ggplot2_dotplot function plots
+the trend in DE gene identification. ggplot2_marginPlot function plots
+the marginal increase in the number of DE genes as replicate level
+increases. ggplot2_intersectPlot function plots the number of DE genes that
+is common across combinations. ggplot2_TPR_FPRPlot function plots the TPR
+and FPR of DE detection using the full dataset's list of DE gene as the
+ground truth. Base on insights from these plots, the user can determine
+whether a desirable level of DE gene discovery has been reached.
 
-At default setting, the results of statistical tests are not saved, only the list of DE genes. However, the entire tables of all tests can be optionally saved for further analysis.
+At the default setting, the results of statistical tests are not saved,
+only the list of DE genes is. However, all of the test results can be
+optionally saved for further analysis.
+
+At default setting, only one CPU node is employed and depend on the number
+of tests that needs to be done, the calculations can take some time to
+complete. If additional nodes are available, additional nodes can be
+employed by specifying the num_workers argument. Parallel computing
+requires BiocParallel package.
 }
 \examples{
-#load data
-data(condition_table, package = "ERSSA")
-data(count_table, package = "ERSSA")
+# load data
+# only 5000 genes and 4 replicates tested to speed up runtime
+data(condition_table.partial, package = "ERSSA")
+data(count_table.partial, package = "ERSSA")
 
-#run erssa main wrapper script
-ssa = erssa(count_table, condition_table, DE_ctrl_cond='heart')
+# run erssa with the "partial" dataset, use default edgeR for DE
+ssa = erssa(count_table.partial, condition_table.partial,
+            DE_ctrl_cond='heart')
+
+# run erssa with the "full" dataset containing 10 replicates per heart and
+# muscle, all genes included.
+# NOT RUN DUE TO LONGER RUNTIME
+#   data(condition_table.full, package="ERSSA")
+#   data(count_table.full, package="ERSSA")
+#   ssa = erssa(count_table.full, condition_table.full, DE_ctrl_cond='heart')
 
 }
 \author{
