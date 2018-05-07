@@ -6,7 +6,7 @@
 \usage{
 erssa(count_table = NULL, condition_table = NULL, DE_ctrl_cond = NULL,
   comb_gen_seed = NULL, filter_cutoff = 1, counts_filtered = FALSE,
-  comb_gen_repeat = 20, DE_software = "edgeR", DE_cutoff_stat = 0.05,
+  comb_gen_repeat = 30, DE_software = "edgeR", DE_cutoff_stat = 0.05,
   DE_cutoff_Abs_logFC = 1, DE_save_table = FALSE,
   marginalPlot_stat = "Mean", path = ".", num_workers = 1)
 }
@@ -36,7 +36,7 @@ at the cutoff specified by filter_cutoff value.}
 
 \item{comb_gen_repeat}{The number of maximum unique combinations to generate
 at each replicate level. More tests will be performed with a bigger value,
-but run time also increases linearly. Default set to 20 unique combinations
+but run time also increases linearly. Default set to 30 unique combinations
 at maximum.}
 
 \item{DE_software}{The name of DE analysis software to use. Current options
@@ -69,8 +69,17 @@ A list of objects generated during the analysis is returned:
  \item{samp.name.comb}{the samples involved in each statistical test}
  \item{list.of.DE.genes}{list of DE genes in each statistical test}
  \item{gg.dotplot.obj}{a list of objects that can be used to recreate the
- dot plot. Can be used for further modification of the plot}
-}
+ dot plot. See function ggplot2_dotplot manual for more detail.}
+ \item{gg.marinPlot.obj}{a list of objects that can be used to recreate the
+ marginal num. of DE genes plot. See function ggplot2_marginPlot manual
+ for more detail.}
+ \item{gg.intersectPlot.obj}{a list of objects that can be used to
+ recreate the num. of intersect genes plot. See function
+ ggplot2_intersectPlot manual for more detail.}
+ \item{gg.TPR_FPRPlot.obj}{a list of objects that can be used to
+ recreate the TPR vs. FPR plot. See function
+ ggplot2_TPR_FPRPlot manual for more detail.}
+          }
 }
 \description{
 ERSSA is a package designed to test whether an currently available RNA-seq
@@ -123,10 +132,13 @@ of tests that needs to be done, the calculations can take some time to
 complete. If additional nodes are available, additional nodes can be
 employed by specifying the num_workers argument. Parallel computing
 requires BiocParallel package.
+
+All runtime parameters are saved in a log file named "erssa.log".
+The condition table used is saved as a csv file named "condition_table.csv"
 }
 \examples{
 # load data
-# only 5000 genes and 4 replicates tested to speed up runtime
+#test dataset with 1000 genes, 4 replicates and 20 comb. per rep. level
 data(condition_table.partial, package = "ERSSA")
 data(count_table.partial, package = "ERSSA")
 
@@ -136,7 +148,7 @@ ssa = erssa(count_table.partial, condition_table.partial,
 
 # run erssa with the "full" dataset containing 10 replicates per heart and
 # muscle, all genes included.
-# NOT RUN DUE TO LONGER RUNTIME
+# NOT RUN DUE TO LONG RUNTIME
 #   data(condition_table.full, package="ERSSA")
 #   data(count_table.full, package="ERSSA")
 #   ssa = erssa(count_table.full, condition_table.full, DE_ctrl_cond='heart')

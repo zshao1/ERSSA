@@ -7,7 +7,7 @@
 Count table generated using data downloaded from Recount2 website
 that processed Raw GTEx dataset. Table has samples on columns and genes
 on rows.
-A partial count table containing 5000 genes and 4 replicates each from heart
+A partial count table containing 1000 genes and 4 replicates each from heart
 and muscle.
 }
 \references{

@@ -12,13 +12,13 @@
 #'
 #' When the total number of possible combinations at a particular
 #' replicate number is more than the specified x number of
-#' repetition (default=20), then only x unique combinations are selected.
+#' repetition (default=30), then only x unique combinations are selected.
 #'
 #' When the total number of possible combination is smaller than the
 #' specified x number of repetitions, then only unique combinations
 #' are selected. For example, 10 samples subsample for 9 replicates
 #' has 10 unique combinations and only 10 combinations will be selected
-#' instead of 20.
+#' instead of 30.
 #'
 #' This is repeated for both conditions and another level of combination
 #' is performed to combine samples from the two conditions. Again, only
@@ -33,7 +33,7 @@
 #' condition (e.g. Control, Treatment).
 #' @param n_repetition The number of maximum unique combinations to generate
 #' at each replicate level. More tests will be performed with a bigger value,
-#' but run time also increases linearly. Default set to 20 unique combinations
+#' but run time also increases linearly. Default set to 30 unique combinations
 #' at maximum.
 #' @param seed An optional seed to generate reproducible random sampling.
 #' DEFAULT = No seed.
@@ -49,7 +49,7 @@
 #'
 #' @examples
 #' #Use example condition_table
-#' #only 5000 genes and 4 replicates tested to speed up runtime
+#' #test dataset with 1000 genes, 4 replicates and 20 comb. per rep. level
 #' data(condition_table.partial, package = "ERSSA")
 #'
 #' combinations.partial = comb_gen(condition_table.partial, n_repetition=20,
@@ -58,7 +58,7 @@
 #' @export
 
 
-comb_gen = function(condition_table=NULL, n_repetition=20, seed=NULL, path='.'){
+comb_gen = function(condition_table=NULL, n_repetition=30, seed=NULL, path='.'){
 
   #check all required arguments supplied
   if (is.null(condition_table)){

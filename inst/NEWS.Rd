@@ -1,4 +1,5 @@
 \name{ERSSANEWS}
+\title{ERSSA NEWS}
 \alias{ERSSA NEWS}
 \encoding{UTF-8}
 

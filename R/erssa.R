@@ -52,6 +52,9 @@
 #' employed by specifying the num_workers argument. Parallel computing
 #' requires BiocParallel package.
 #'
+#' All runtime parameters are saved in a log file named "erssa.log".
+#' The condition table used is saved as a csv file named "condition_table.csv"
+#'
 #' @param count_table A RNA-seq count matrix with genes on each row and samples
 #' on each column. If count_table has already been filtered to remove non- or
 #' low-expressing genes, then counts_filtered argument should be changed to
@@ -71,7 +74,7 @@
 #' at the cutoff specified by filter_cutoff value.
 #' @param comb_gen_repeat The number of maximum unique combinations to generate
 #' at each replicate level. More tests will be performed with a bigger value,
-#' but run time also increases linearly. Default set to 20 unique combinations
+#' but run time also increases linearly. Default set to 30 unique combinations
 #' at maximum.
 #' @param DE_software The name of DE analysis software to use. Current options
 #' include "edgeR" and "DESeq2". Default to "edgeR".
@@ -97,14 +100,24 @@
 #'  \item{samp.name.comb}{the samples involved in each statistical test}
 #'  \item{list.of.DE.genes}{list of DE genes in each statistical test}
 #'  \item{gg.dotplot.obj}{a list of objects that can be used to recreate the
-#'  dot plot. Can be used for further modification of the plot}
-#' }
+#'  dot plot. See function ggplot2_dotplot manual for more detail.}
+#'  \item{gg.marinPlot.obj}{a list of objects that can be used to recreate the
+#'  marginal num. of DE genes plot. See function ggplot2_marginPlot manual
+#'  for more detail.}
+#'  \item{gg.intersectPlot.obj}{a list of objects that can be used to
+#'  recreate the num. of intersect genes plot. See function
+#'  ggplot2_intersectPlot manual for more detail.}
+#'  \item{gg.TPR_FPRPlot.obj}{a list of objects that can be used to
+#'  recreate the TPR vs. FPR plot. See function
+#'  ggplot2_TPR_FPRPlot manual for more detail.}
+#'           }
+#'
 #'
 #' @author Zixuan Shao, \email{Zixuanshao.zach@@gmail.com}
 #'
 #' @examples
 #' # load data
-#' # only 5000 genes and 4 replicates tested to speed up runtime
+#' #test dataset with 1000 genes, 4 replicates and 20 comb. per rep. level
 #' data(condition_table.partial, package = "ERSSA")
 #' data(count_table.partial, package = "ERSSA")
 #'
@@ -114,7 +127,7 @@
 #'
 #' # run erssa with the "full" dataset containing 10 replicates per heart and
 #' # muscle, all genes included.
-#' # NOT RUN DUE TO LONGER RUNTIME
+#' # NOT RUN DUE TO LONG RUNTIME
 #' #   data(condition_table.full, package="ERSSA")
 #' #   data(count_table.full, package="ERSSA")
 #' #   ssa = erssa(count_table.full, condition_table.full, DE_ctrl_cond='heart')
@@ -124,7 +137,7 @@
 
 erssa = function(count_table=NULL, condition_table=NULL, DE_ctrl_cond=NULL,
                  comb_gen_seed=NULL, filter_cutoff=1, counts_filtered=FALSE,
-                 comb_gen_repeat=20, DE_software='edgeR', DE_cutoff_stat = 0.05,
+                 comb_gen_repeat=30, DE_software='edgeR', DE_cutoff_stat = 0.05,
                  DE_cutoff_Abs_logFC = 1, DE_save_table=FALSE,
                  marginalPlot_stat='Mean', path='.', num_workers=1){
 
@@ -144,6 +157,12 @@ erssa = function(count_table=NULL, condition_table=NULL, DE_ctrl_cond=NULL,
          count table contains only numbers and that the list of gene names is
          the data.frame index')
   }
+
+  #start log file
+  log = file(file.path(path, "ERSSA.log"))
+  log_l = c('-------------', 'ERSSA run log', '-------------',' ')
+  log_l = c(log_l, paste0('Start time: ',Sys.time()))
+
 
 
   #filter the count table by average CPM value cutoff
@@ -212,6 +231,39 @@ erssa = function(count_table=NULL, condition_table=NULL, DE_ctrl_cond=NULL,
   gg_TPR_FPR = ERSSA::ggplot2_TPR_FPRPlot(deg=deg, count_table.filtered=
                                             count_table.filtered, path=path)
 
+  #finish log file
+  log_l = c(log_l, paste0('Finish time: ',Sys.time()), ' ')
+  log_l = c(log_l, paste0('Control condition: ', DE_ctrl_cond))
+
+  if (is.null(comb_gen_seed)){
+      log_l = c(log_l, 'Random seed: NONE')
+  } else{
+      log_l = c(log_l, paste0('Random seed: ', comb_gen_seed))
+  }
+
+  log_l = c(log_l, paste0('Count table filtered by ERSSA: ', !counts_filtered))
+
+  if (counts_filtered == FALSE){
+    log_l = c(log_l, paste0('Count table CPM filter: ', filter_cutoff))
+  }
+
+  log_l = c(log_l, paste0('Num. of unique sample combination tested: ',
+                          comb_gen_repeat))
+  log_l = c(log_l, paste0('DE software used: ', DE_software))
+  log_l = c(log_l, paste0('Statistical cutoff for DE: ',
+                          DE_cutoff_stat))
+  log_l = c(log_l, paste0('Absolute log2FC cutoff for DE: ',
+                          DE_cutoff_Abs_logFC))
+  log_l = c(log_l, paste0('DE tables saved to drive: ', DE_save_table))
+  log_l = c(log_l, paste0('Statistic used in marginal plot: ',
+                          marginalPlot_stat))
+  log_l = c(log_l, paste0('Number of CPU nodes used: ', num_workers))
+  writeLines(log_l, log)
+  close(log)
+
+  #save the condition table used to drive
+  utils::write.csv(x = condition_table,
+                   file = file.path(path, 'condition_table.csv'))
 
   return(list(count_table.filtered=count_table.filtered,
               samp.name.comb=combinations,
@@ -221,6 +273,3 @@ erssa = function(count_table=NULL, condition_table=NULL, DE_ctrl_cond=NULL,
               gg.intersectPlot.obj = gg_intersect,
               gg.TPR_FPRPlot.obj=gg_TPR_FPR))
 }
-
-
-

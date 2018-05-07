@@ -37,6 +37,12 @@ directory.}
 
 \item{num_workers}{Number of workers for parallel computing. Default=1.}
 }
+\value{
+A list of list of vector. Top list contains elements corresponding to
+replicate levels. Each child list contains elements corresponding to each
+combination at the respective replicate level. The child vectors contain
+differentially expressed gene names.
+}
 \description{
 \code{erssa_edger_parallel} function performs the same calculation as
 \code{erssa_edger} except now employs BiocParallel to perform parallel
