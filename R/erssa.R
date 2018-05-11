@@ -88,7 +88,10 @@
 #' can be saved to the drive for further analysis. Default setting does not
 #' save the results to save drive space. Default = FALSE.
 #' @param marginalPlot_stat The statistic used for plotting of values in
-#' marginal plot function. Options include "Mean", "Median". Default='mean'.
+#' marginal plot function. Options include 'mean', 'median'. Default='mean'.
+#' @param TPR_FPR_stat The statistics used to summarize TPR and FPR at
+#' each replicate level in ggplot2_TPR_FPRPlot function. Options include
+#' 'mean', 'median'. Default = 'mean'.
 #'
 #' @param path The path to which the plots and results will be saved. Default
 #' to current working directory.
@@ -139,7 +142,8 @@ erssa = function(count_table=NULL, condition_table=NULL, DE_ctrl_cond=NULL,
                  comb_gen_seed=NULL, filter_cutoff=1, counts_filtered=FALSE,
                  comb_gen_repeat=30, DE_software='edgeR', DE_cutoff_stat = 0.05,
                  DE_cutoff_Abs_logFC = 1, DE_save_table=FALSE,
-                 marginalPlot_stat='Mean', path='.', num_workers=1){
+                 marginalPlot_stat='mean', TPR_FPR_stat='mean',
+                 path='.', num_workers=1){
 
   #check all required arguments supplied
   if (is.null(count_table)){
@@ -153,9 +157,9 @@ erssa = function(count_table=NULL, condition_table=NULL, DE_ctrl_cond=NULL,
   } else if (!(is.data.frame(condition_table))){
     stop('condition_table is not an expected data.frame object')
   } else if (length(unique(sapply(count_table, class)))!=1){
-    stop('More than one data type detected in count table, please make sure
-         count table contains only numbers and that the list of gene names is
-         the data.frame index')
+    stop(paste0('More than one data type detected in count table, please ',
+                'make sure count table contains only numbers and that the ',
+                'list of gene names is the data.frame index'))
   }
 
   #start log file
@@ -229,7 +233,9 @@ erssa = function(count_table=NULL, condition_table=NULL, DE_ctrl_cond=NULL,
   #plots the TPR and FPR of DE detection using the full dataset's list of DE
   #gene as the ground truth
   gg_TPR_FPR = ERSSA::ggplot2_TPR_FPRPlot(deg=deg, count_table.filtered=
-                                            count_table.filtered, path=path)
+                                          count_table.filtered,
+                                          stat=TPR_FPR_stat,
+                                          path=path)
 
   #finish log file
   log_l = c(log_l, paste0('Finish time: ',Sys.time()), ' ')

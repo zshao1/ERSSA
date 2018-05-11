@@ -69,8 +69,8 @@ erssa_deseq2 = function(count_table.filtered=NULL, combinations=NULL,
 
   #check all required arguments supplied
   if (is.null(count_table.filtered)){
-    stop('Missing required count_table.filtered argument in erssa_deseq2
-         function')
+    stop(paste0('Missing required count_table.filtered argument in ',
+                'erssa_deseq2 function'))
   } else if (is.null(combinations)){
     stop("Missing required combinations argument in erssa_deseq2 function")
   } else if (is.null(condition_table)){
@@ -80,9 +80,9 @@ erssa_deseq2 = function(count_table.filtered=NULL, combinations=NULL,
   } else if (!(is.data.frame(count_table.filtered))){
     stop('count_table is not an expected data.frame object')
   } else if (length(unique(sapply(count_table.filtered, class)))!=1){
-    stop('More than one data type detected in count table, please make sure
-         count table contains only numbers and that the list of gene names is
-         the data.frame index')
+    stop(paste0('More than one data type detected in count table, please make ',
+                'sure count table contains only numbers and that the list of ',
+                'gene names is the data.frame index'))
   } else if (!(is.data.frame(condition_table))){
     stop('condition_table is not an expected data.frame object')
   }
@@ -239,22 +239,22 @@ erssa_deseq2_parallel = function(count_table.filtered=NULL, combinations=NULL,
 
   #check all required arguments supplied
   if (is.null(count_table.filtered)){
-    stop('Missing required count_table.filtered argument in
-         erssa_deseq2_parallel function')
+      stop(paste0('Missing required count_table.filtered argument in ',
+                  'erssa_deseq2_parallel function'))
   } else if (is.null(combinations)){
-    stop("Missing required combinations argument in erssa_deseq2_parallel
-         function")
+    stop(paste0("Missing required combinations argument in ",
+                "erssa_deseq2_parallel function"))
   } else if (is.null(condition_table)){
-    stop("Missing required condition_table argument in erssa_deseq2_parallel
-         function")
+    stop(paste0("Missing required condition_table argument in ",
+                "erssa_deseq2_parallel function"))
   } else if (is.null(control)){
     stop("Missing required control argument in erssa_deseq2_parallel function")
   } else if (!(is.data.frame(count_table.filtered))){
     stop('count_table is not an expected data.frame object')
   } else if (length(unique(sapply(count_table.filtered, class)))!=1){
-    stop('More than one data type detected in count table, please make sure
-         count table contains only numbers and that the list of gene names
-         is the data.frame index')
+    stop(paste0('More than one data type detected in count table, please ',
+                'make sure count table contains only numbers and that the ',
+                'list of gene names is the data.frame index'))
   } else if (!(is.data.frame(condition_table))){
     stop('condition_table is not an expected data.frame object')
   }

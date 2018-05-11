@@ -37,9 +37,9 @@ count_filter = function(count_table=NULL, cutoff=1, path='.'){
   } else if (!(is.data.frame(count_table))){
     stop('count_table is not an expected data.frame object')
   } else if (length(unique(sapply(count_table, class)))!=1){
-    stop('More than one data type detected in count table, please make sure
-         count table contains only numbers and that the list of gene names is
-         the data.frame index')
+    stop(paste0('More than one data type detected in count table, please make ',
+                'sure count table contains only numbers and that the list of ',
+                'gene names is the data.frame index'))
   }
 
   cpm_table = t(t(count_table)*1000000/colSums(count_table))

@@ -8,7 +8,8 @@ erssa(count_table = NULL, condition_table = NULL, DE_ctrl_cond = NULL,
   comb_gen_seed = NULL, filter_cutoff = 1, counts_filtered = FALSE,
   comb_gen_repeat = 30, DE_software = "edgeR", DE_cutoff_stat = 0.05,
   DE_cutoff_Abs_logFC = 1, DE_save_table = FALSE,
-  marginalPlot_stat = "Mean", path = ".", num_workers = 1)
+  marginalPlot_stat = "mean", TPR_FPR_stat = "mean", path = ".",
+  num_workers = 1)
 }
 \arguments{
 \item{count_table}{A RNA-seq count matrix with genes on each row and samples
@@ -55,7 +56,11 @@ can be saved to the drive for further analysis. Default setting does not
 save the results to save drive space. Default = FALSE.}
 
 \item{marginalPlot_stat}{The statistic used for plotting of values in
-marginal plot function. Options include "Mean", "Median". Default='mean'.}
+marginal plot function. Options include 'mean', 'median'. Default='mean'.}
+
+\item{TPR_FPR_stat}{The statistics used to summarize TPR and FPR at
+each replicate level in ggplot2_TPR_FPRPlot function. Options include
+'mean', 'median'. Default = 'mean'.}
 
 \item{path}{The path to which the plots and results will be saved. Default
 to current working directory.}
