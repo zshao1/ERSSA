@@ -52,8 +52,10 @@
 #' employed by specifying the num_workers argument. Parallel computing
 #' requires BiocParallel package.
 #'
-#' All runtime parameters are saved in a log file named "erssa.log".
-#' The condition table used is saved as a csv file named "condition_table.csv"
+#' All runtime parameters are saved in a log file named "erssa.log". The
+#' condition table used is saved as a csv file named "ERSSA_ConditionTable.csv".
+#' The list of objects returned is also saved to the disk for easy loading at
+#' at a later time for further modification.
 #'
 #' @param count_table A RNA-seq count matrix with genes on each row and samples
 #' on each column. If count_table has already been filtered to remove non- or
@@ -269,13 +271,17 @@ erssa = function(count_table=NULL, condition_table=NULL, DE_ctrl_cond=NULL,
 
   #save the condition table used to drive
   utils::write.csv(x = condition_table,
-                   file = file.path(path, 'condition_table.csv'))
+                   file = file.path(path, 'ERSSA_ConditionTable.csv'))
 
-  return(list(count_table.filtered=count_table.filtered,
-              samp.name.comb=combinations,
-              list.of.DE.genes=deg,
-              gg.dotPlot.obj = gg_dot,
-              gg.marinPlot.obj=gg_margin,
-              gg.intersectPlot.obj = gg_intersect,
-              gg.TPR_FPRPlot.obj=gg_TPR_FPR))
+  #create a list of ERSSA generated objects
+  ERSSA.objects = list(count_table.filtered=count_table.filtered,
+                       samp.name.comb=combinations,
+                       list.of.DE.genes=deg,
+                       gg.dotPlot.obj = gg_dot,
+                       gg.marinPlot.obj=gg_margin,
+                       gg.intersectPlot.obj = gg_intersect,
+                       gg.TPR_FPRPlot.obj=gg_TPR_FPR)
+  save(ERSSA.objects, file = file.path(path,'ERSSA_ERSSAObjects.rda'))
+
+  return(ERSSA.objects)
 }

@@ -71,7 +71,8 @@ ggplot2_intersectPlot = function(deg=NULL, path='.'){
   full_num_DEG = length(deg$full$comb_1)
 
   #dataframe for plotting
-  rep_levels = sapply(all_rep_levels, function(x) strsplit(x, split='_')[[1]][2])
+  rep_levels = sapply(all_rep_levels, function(x)
+      strsplit(x, split='_')[[1]][2])
   inters_genes_num = sapply(inters_genes, function(x) length(x))
 
   inters_genes_df = data.frame(replicate_number=rep_levels,
@@ -101,7 +102,7 @@ ggplot2_intersectPlot = function(deg=NULL, path='.'){
 
 
   #save plot and return ggplot2 object for additional customarization if needed
-  ggplot2::ggsave(filename=file.path(path,'ERSSA_plot_intersectDEGenes.png'),
+  ggplot2::ggsave(filename=file.path(path,'ERSSA_plot_3_IntersectDEGenes.png'),
          plot=gg, dpi=300, width = 20,
          height = 15, units = "cm")
 

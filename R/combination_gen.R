@@ -180,7 +180,7 @@ comb_gen = function(condition_table=NULL, n_repetition=30, seed=NULL, path='.'){
   dir.create(folder_path, showWarnings = FALSE)
 
   utils::write.csv(plyr::ldply(replicate_combs, cbind),
-                   file.path(path,'Sample_combinations.csv'))
+                   file.path(path,'ERSSA_SampleCombinations.csv'))
   return(replicate_combs)
 }
 

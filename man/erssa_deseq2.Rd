@@ -25,7 +25,8 @@ a row. Column 1 contains sample names and Column 2 contains sample condition
 padj pass the cutoff. Default = 0.05.}
 
 \item{cutoff_Abs_logFC}{The cutoff in abs(log2FoldChange) for differential
-expression consideration. Genes with higher abs(log2FoldChange) pass the cutoff.
+expression consideration. Genes with higher abs(log2FoldChange) pass
+the cutoff.
  Default = 1.}
 
 \item{save_table}{Boolean. When set to TRUE, function will, in addition, save

@@ -33,7 +33,8 @@
 #' @param cutoff_stat The cutoff in padj for DE consideration. Genes with lower
 #'  padj pass the cutoff. Default = 0.05.
 #' @param cutoff_Abs_logFC The cutoff in abs(log2FoldChange) for differential
-#' expression consideration. Genes with higher abs(log2FoldChange) pass the cutoff.
+#' expression consideration. Genes with higher abs(log2FoldChange) pass
+#' the cutoff.
 #'  Default = 1.
 #' @param save_table Boolean. When set to TRUE, function will, in addition, save
 #' the generated DESeq2 result table as csv files. The files are saved on the
@@ -159,7 +160,7 @@ erssa_deseq2 = function(count_table.filtered=NULL, combinations=NULL,
 
   }
 
-  save(DE_genes, file = file.path(path,'DE_genes_DESeq2.rda'))
+  save(DE_genes, file = file.path(path,'ERSSA_DEGenesDESeq2.rda'))
   return(DE_genes)
 }
 
@@ -342,7 +343,7 @@ erssa_deseq2_parallel = function(count_table.filtered=NULL, combinations=NULL,
 
   }
 
-  save(DE_genes, file = file.path(path,'DE_genes_DESeq2.rda'))
+  save(DE_genes, file = file.path(path,'ERSSA_DEGenesDESeq2.rda'))
   return(DE_genes)
 }
 

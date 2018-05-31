@@ -66,7 +66,8 @@ ggplot2_dotplot = function(deg=NULL, path='.'){
   full_num_DEG = length(deg$full$comb_1)
 
   #create data frame for plotting
-  deg_df = data.frame(num_DEG = num_DEG, rep_level = rep_level, comb_ID = comb_ID)
+  deg_df = data.frame(num_DEG = num_DEG, rep_level = rep_level,
+                      comb_ID = comb_ID)
   deg_df$rep_level = factor(deg_df$rep_level, levels = unique(deg_df$rep_level))
 
   #plot DE genes at each replicate level
@@ -91,7 +92,7 @@ ggplot2_dotplot = function(deg=NULL, path='.'){
 
 
   #save plot and return ggplot2 object for additional customarization if needed
-  ggplot2::ggsave(filename=file.path(path,'ERSSA_plot_NumOfDEGenes.png'),
+  ggplot2::ggsave(filename=file.path(path,'ERSSA_plot_1_NumOfDEGenes.png'),
          plot=gg, dpi=300, width = 20,
          height = 15, units = "cm")
 

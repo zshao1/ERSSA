@@ -1,4 +1,4 @@
-\name{ERSSANEWS}
+\name{ERSSA NEWS}
 \title{ERSSA NEWS}
 \alias{ERSSA NEWS}
 \encoding{UTF-8}
@@ -9,6 +9,9 @@
 Codes ready for bioconductor submission
 
 \item
-Add additional example datasets
+Added full example dataset
+
+\item
+Cleanup the outputs to be more descriptive and append ERSSA_ to all files
 }}
 

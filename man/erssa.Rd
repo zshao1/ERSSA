@@ -138,8 +138,10 @@ complete. If additional nodes are available, additional nodes can be
 employed by specifying the num_workers argument. Parallel computing
 requires BiocParallel package.
 
-All runtime parameters are saved in a log file named "erssa.log".
-The condition table used is saved as a csv file named "condition_table.csv"
+All runtime parameters are saved in a log file named "erssa.log". The
+condition table used is saved as a csv file named "ERSSA_ConditionTable.csv".
+The list of objects returned is also saved to the disk for easy loading at
+at a later time for further modification.
 }
 \examples{
 # load data

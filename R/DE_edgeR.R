@@ -161,7 +161,7 @@ erssa_edger = function(count_table.filtered=NULL, combinations=NULL,
 
   }
 
-  save(DE_genes, file = file.path(path,'DE_genes_edgeR.rda'))
+  save(DE_genes, file = file.path(path,'ERSSA_DEGenesEdgeR.rda'))
   return(DE_genes)
 }
 
@@ -347,6 +347,6 @@ erssa_edger_parallel = function(count_table.filtered=NULL, combinations=NULL,
 
   }
 
-  save(DE_genes, file = file.path(path,'DE_genes_edgeR.rda'))
+  save(DE_genes, file = file.path(path,'ERSSA_DEGenesEdgeR.rda'))
   return(DE_genes)
 }

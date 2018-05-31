@@ -110,7 +110,8 @@ ggplot2_TPR_FPRPlot = function(deg=NULL, count_table.filtered=NULL,
                                      levels=unique(TPR_FPR.dataframe$replicate))
 
   #plot
-  getPalette = grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral"))
+  getPalette = grDevices::colorRampPalette(
+      RColorBrewer::brewer.pal(9, "Spectral"))
   rep_colors = getPalette(length(names(deg)))
   rep_colors = c(rep_colors[1:length(rep_colors)-1],'#999999')
 
@@ -134,7 +135,7 @@ ggplot2_TPR_FPRPlot = function(deg=NULL, count_table.filtered=NULL,
 
 
   #save plot and return ggplot2 object for additional customarization if needed
-  ggplot2::ggsave(filename=file.path(path,'ERSSA_plot_TDR_FDR.png'),
+  ggplot2::ggsave(filename=file.path(path,'ERSSA_plot_4_FPRvTPRPlot.png'),
          plot=gg, dpi=300, width = 20,
          height = 15, units = "cm")
 

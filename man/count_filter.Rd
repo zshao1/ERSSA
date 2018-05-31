@@ -24,7 +24,7 @@ non- and low-expression genes at an defined average CPM cutoff (Default=1).
 }
 \details{
 The filtered count table is saved to the drive in a file named
-"filtered_counts.csv".
+"ERSSA_FilteredCounts.csv".
 }
 \examples{
 #load simple GTeX example count table

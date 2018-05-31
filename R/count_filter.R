@@ -6,7 +6,7 @@
 #'
 #' @details
 #' The filtered count table is saved to the drive in a file named
-#' "filtered_counts.csv".
+#' "ERSSA_FilteredCounts.csv".
 #'
 #' @param count_table A RNA-seq count matrix with genes on each row and samples
 #' on each column.
@@ -50,6 +50,7 @@ count_filter = function(count_table=NULL, cutoff=1, path='.'){
   dir.create(folder_path, showWarnings = FALSE)
 
   #save the filtered counts
-  utils::write.csv(count_table_filtered, file.path(path,'filtered_counts.csv'))
+  utils::write.csv(count_table_filtered,
+                   file.path(path,'ERSSA_FilteredCounts.csv'))
   return(count_table_filtered)
 }

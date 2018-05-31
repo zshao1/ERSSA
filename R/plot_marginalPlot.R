@@ -90,7 +90,8 @@ ggplot2_marginPlot = function(deg=NULL, stat='mean', path='.'){
 
 
   #save plot and return ggplot2 object for additional customarization if needed
-  ggplot2::ggsave(filename=file.path(path,'ERSSA_plot_MarginalDiff.png'),
+  ggplot2::ggsave(filename=
+                      file.path(path,'ERSSA_plot_2_MarginalNumOfDEGenes.png'),
          plot=gg, dpi=300, width = 20,
          height = 15, units = "cm")
 
