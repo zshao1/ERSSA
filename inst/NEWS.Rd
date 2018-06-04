@@ -7,11 +7,12 @@
 \section{Version 0.99.0}{\itemize{
 \item
 Codes ready for bioconductor submission
-
 \item
 Added full example dataset
-
 \item
 Cleanup the outputs to be more descriptive and append ERSSA_ to all files
+\item
+Write vignette
+
 }}
 

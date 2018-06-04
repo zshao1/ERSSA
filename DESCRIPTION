@@ -21,7 +21,7 @@ Imports:
 	grDevices,
 	stats,
 	utils
-Suggests: knitr
+Suggests: BiocStyle, knitr, rmarkdown
 VignetteBuilder: knitr
 biocViews: GeneExpression, Transcription, DifferentialExpression, RNASeq, MultipleComparison, QualityControl
 License: GPL-3 | file LICENSE
