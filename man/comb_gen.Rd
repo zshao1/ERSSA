@@ -54,11 +54,12 @@ Selected combinations of samples at each replicate number are then
 returned. Combinations are also saved as a table to the drive.
 }
 \examples{
-#Use example condition_table
-#test dataset with 1000 genes, 4 replicates and 20 comb. per rep. level
+# Use example condition_table
+# example dataset containing 1000 genes, 4 replicates and 10 comb. per rep.
+# level
 data(condition_table.partial, package = "ERSSA")
 
-combinations.partial = comb_gen(condition_table.partial, n_repetition=20)
+combinations.partial = comb_gen(condition_table.partial, n_repetition=10)
 
 }
 \author{

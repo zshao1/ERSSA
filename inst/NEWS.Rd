@@ -3,6 +3,13 @@
 \alias{ERSSA NEWS}
 \encoding{UTF-8}
 
+\section{Version 0.99.3}{\itemize{
+\item
+Add additional citations
+\item
+Reduce example runtime with fewer combinations
+}}
+
 \section{Version 0.99.2}{\itemize{
 \item
 Remove set.seed from package code

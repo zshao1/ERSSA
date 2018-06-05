@@ -46,11 +46,12 @@
 #' @author Zixuan Shao, \email{Zixuanshao.zach@@gmail.com}
 #'
 #' @examples
-#' #Use example condition_table
-#' #test dataset with 1000 genes, 4 replicates and 20 comb. per rep. level
+#' # Use example condition_table
+#' # example dataset containing 1000 genes, 4 replicates and 10 comb. per rep.
+#' # level
 #' data(condition_table.partial, package = "ERSSA")
 #'
-#' combinations.partial = comb_gen(condition_table.partial, n_repetition=20)
+#' combinations.partial = comb_gen(condition_table.partial, n_repetition=10)
 #'
 #' @export
 

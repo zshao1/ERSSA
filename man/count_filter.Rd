@@ -27,8 +27,8 @@ The filtered count table is saved to the drive in a file named
 "ERSSA_FilteredCounts.csv".
 }
 \examples{
-#load simple GTeX example count table
-#test dataset with 1000 genes, 4 replicates and 20 comb. per rep. level
+# load simple GTeX example count table
+# example dataset containing 1000 genes, 4 replicates
 data(count_table.partial, package = "ERSSA")
 
 #filter the counts

@@ -139,8 +139,8 @@ The list of objects returned is also saved to the disk for easy loading at
 at a later time for further modification.
 }
 \examples{
-# load data
-#test dataset with 1000 genes, 4 replicates and 20 comb. per rep. level
+# load example dataset containing 1000 genes, 4 replicates and 10 comb. per
+# rep. level
 data(condition_table.partial, package = "ERSSA")
 data(count_table.partial, package = "ERSSA")
 
@@ -150,11 +150,22 @@ ssa = erssa(count_table.partial, condition_table.partial,
 
 # run erssa with the "full" dataset containing 10 replicates per heart and
 # muscle, all genes included.
-# NOT RUN DUE TO LONG RUNTIME
+# Remove comments to run
+#   set.seed(1)
 #   data(condition_table.full, package="ERSSA")
 #   data(count_table.full, package="ERSSA")
 #   ssa = erssa(count_table.full, condition_table.full, DE_ctrl_cond='heart')
 
+}
+\references{
+Ching, Travers, Sijia Huang, and Lana X. Garmire. “Power Analysis and Sample
+Size Estimation for RNA-Seq Differential Expression.” RNA, September 22,
+2014. https://doi.org/10.1261/rna.046011.114.
+
+Hoskins, Stephanie Page, Derek Shyr, and Yu Shyr. “Sample Size Calculation
+for Differential Expression Analysis of RNA-Seq Data.” In Frontiers of
+Biostatistical Methods and Applications in Clinical Oncology, 359–79.
+Springer, Singapore, 2017. https://doi.org/10.1007/978-981-10-0126-0_22.
 }
 \author{
 Zixuan Shao, \email{Zixuanshao.zach@gmail.com}

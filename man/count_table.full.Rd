@@ -11,4 +11,15 @@ Contains 10 samples each from heart and muscle.
 }
 \references{
 \url{https://jhubiostatistics.shinyapps.io/recount/}
+
+Melé, Marta, Pedro G. Ferreira, Ferran Reverter, David S. DeLuca, Jean
+Monlong, Michael Sammeth, Taylor R. Young, et al. “The Human Transcriptome
+across Tissues and Individuals.” Science 348, no. 6235 (May 8, 2015):
+660–65. https://doi.org/10.1126/science.aaa0355.
+
+Collado-Torres, Leonardo, Abhinav Nellore, Kai Kammers, Shannon E. Ellis,
+Margaret A. Taub, Kasper D. Hansen, Andrew E. Jaffe, Ben Langmead, and
+Jeffrey T. Leek. “Reproducible RNA-Seq Analysis Using Recount2.” Nature
+Biotechnology 35, no. 4 (April 2017): 319–21.
+https://doi.org/10.1038/nbt.3838.
 }
