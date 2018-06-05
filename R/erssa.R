@@ -66,9 +66,6 @@
 #' conditions (e.g. Control, Treatment).
 #' @param DE_ctrl_cond The name of control condition in the comparison. Must be
 #' one of the two conditions in the condition table.
-#' @param comb_gen_seed To generate unique combinations of samples at each
-#' replicate level, a random process is employed. The seed can be set for
-#' reproducible combination generation. Default to no seed.
 #' @param filter_cutoff The average CPM threshold set for filtering genes.
 #' Default to 1.
 #' @param counts_filtered Boolean. Whether count table has already been
@@ -141,7 +138,7 @@
 
 
 erssa = function(count_table=NULL, condition_table=NULL, DE_ctrl_cond=NULL,
-                 comb_gen_seed=NULL, filter_cutoff=1, counts_filtered=FALSE,
+                 filter_cutoff=1, counts_filtered=FALSE,
                  comb_gen_repeat=30, DE_software='edgeR', DE_cutoff_stat = 0.05,
                  DE_cutoff_Abs_logFC = 1, DE_save_table=FALSE,
                  marginalPlot_stat='mean', TPR_FPR_stat='mean',
@@ -186,7 +183,7 @@ erssa = function(count_table=NULL, condition_table=NULL, DE_ctrl_cond=NULL,
   #generate sample name combinations at various replicate levels
   combinations = ERSSA::comb_gen(condition_table=condition_table,
                                  n_repetition=comb_gen_repeat,
-                                 seed=comb_gen_seed, path=path)
+                                 path=path)
 
 
   #run DE software to generate DE gene list
@@ -242,12 +239,6 @@ erssa = function(count_table=NULL, condition_table=NULL, DE_ctrl_cond=NULL,
   #finish log file
   log_l = c(log_l, paste0('Finish time: ',Sys.time()), ' ')
   log_l = c(log_l, paste0('Control condition: ', DE_ctrl_cond))
-
-  if (is.null(comb_gen_seed)){
-      log_l = c(log_l, 'Random seed: NONE')
-  } else{
-      log_l = c(log_l, paste0('Random seed: ', comb_gen_seed))
-  }
 
   log_l = c(log_l, paste0('Count table filtered by ERSSA: ', !counts_filtered))
 

@@ -35,8 +35,6 @@
 #' at each replicate level. More tests will be performed with a bigger value,
 #' but run time also increases linearly. Default set to 30 unique combinations
 #' at maximum.
-#' @param seed An optional seed to generate reproducible random sampling.
-#' DEFAULT = No seed.
 #' @param path The path to which the combinations will be saved as a csv
 #' table. Default to current working directory.
 #'
@@ -52,24 +50,18 @@
 #' #test dataset with 1000 genes, 4 replicates and 20 comb. per rep. level
 #' data(condition_table.partial, package = "ERSSA")
 #'
-#' combinations.partial = comb_gen(condition_table.partial, n_repetition=20,
-#' seed=1)
+#' combinations.partial = comb_gen(condition_table.partial, n_repetition=20)
 #'
 #' @export
 
 
-comb_gen = function(condition_table=NULL, n_repetition=30, seed=NULL, path='.'){
+comb_gen = function(condition_table=NULL, n_repetition=30, path='.'){
 
   #check all required arguments supplied
   if (is.null(condition_table)){
     stop('Missing required condition_table argument in comb_gen function')
   } else if (!(is.data.frame(condition_table))){
     stop('condition_table is not an expected data.frame object')
-  }
-
-  #set seed if a seed was provided
-  if (!missing(seed)){
-    set.seed(seed)
   }
 
   #rename input condition table column name

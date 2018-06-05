@@ -5,11 +5,10 @@
 \title{Empirical RNA-seq Sample Size Analysis}
 \usage{
 erssa(count_table = NULL, condition_table = NULL, DE_ctrl_cond = NULL,
-  comb_gen_seed = NULL, filter_cutoff = 1, counts_filtered = FALSE,
-  comb_gen_repeat = 30, DE_software = "edgeR", DE_cutoff_stat = 0.05,
-  DE_cutoff_Abs_logFC = 1, DE_save_table = FALSE,
-  marginalPlot_stat = "mean", TPR_FPR_stat = "mean", path = ".",
-  num_workers = 1)
+  filter_cutoff = 1, counts_filtered = FALSE, comb_gen_repeat = 30,
+  DE_software = "edgeR", DE_cutoff_stat = 0.05, DE_cutoff_Abs_logFC = 1,
+  DE_save_table = FALSE, marginalPlot_stat = "mean",
+  TPR_FPR_stat = "mean", path = ".", num_workers = 1)
 }
 \arguments{
 \item{count_table}{A RNA-seq count matrix with genes on each row and samples
@@ -23,10 +22,6 @@ conditions (e.g. Control, Treatment).}
 
 \item{DE_ctrl_cond}{The name of control condition in the comparison. Must be
 one of the two conditions in the condition table.}
-
-\item{comb_gen_seed}{To generate unique combinations of samples at each
-replicate level, a random process is employed. The seed can be set for
-reproducible combination generation. Default to no seed.}
 
 \item{filter_cutoff}{The average CPM threshold set for filtering genes.
 Default to 1.}
