@@ -3,6 +3,11 @@
 \alias{ERSSA NEWS}
 \encoding{UTF-8}
 
+\section{Version 0.99.4}{\itemize{
+\item
+Update installation instruction in vignette
+}}
+
 \section{Version 0.99.3}{\itemize{
 \item
 Add additional citations

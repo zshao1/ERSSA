@@ -28,12 +28,11 @@ When applied to RNA-seq data from studies including GTEx [3], ERSSA demonstrated
 
 # Installation
 
-Currently, the most up-to-date version can be found on [Github](https://github.com/zshao1/ERSSA). The package can be installed from Github with the following commands in the R console:
+Install the latest stable version of ERSSA by entering the following commands in R console:
 
 ```{r, eval=FALSE}
-install.packages("devtools") #install devtools package
-library(devtools) #load devtools
-install_github("zshao1/ERSSA") #install from Github
+source("https://bioconductor.org/biocLite.R")
+biocLite("ERSSA")
 ```
 
 # Usage
