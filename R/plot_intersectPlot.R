@@ -90,7 +90,7 @@ ggplot2_intersectPlot = function(deg=NULL, path='.'){
   gg = ggplot2::ggplot(inters_genes_df, ggplot2::aes_(x=~replicate_number,
                                                       y=~num_intersect_genes))+
     ggplot2::geom_col(width=0.7) +
-    ggplot2::theme_bw() +
+    ggplot2::theme_bw(base_size=14) +
     ggplot2::geom_hline(ggplot2::aes(yintercept=full_num_DEG, color =
                                        "Full dataset DE genes"), size=0.75,
                         linetype="dashed", show.legend = TRUE) +

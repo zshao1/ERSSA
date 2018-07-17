@@ -123,7 +123,7 @@ ggplot2_TPR_FPRPlot = function(deg=NULL, count_table.filtered=NULL,
   gg = ggplot2::ggplot(TPR_FPR.dataframe,
                        ggplot2::aes(FPR, TPR, colour=replicate)) +
       ggplot2::geom_point(size=2) +
-      ggplot2::theme_bw() +
+      ggplot2::theme_bw(base_size=14) +
       ggplot2::labs(x='FPR', y="TPR") +
       ggplot2::geom_point(data=stats::aggregate(TPR_FPR.dataframe[,1:2],
                                          list(TPR_FPR.dataframe$replicate),
@@ -131,7 +131,8 @@ ggplot2_TPR_FPRPlot = function(deg=NULL, count_table.filtered=NULL,
                           size=3, shape=23,
                           color='black', fill=rep_colors,
                           stroke = 1) +
-      ggplot2::scale_color_manual(values = rep_colors)
+      ggplot2::scale_color_manual(values = rep_colors) +
+      ggplot2::ylim(0,1)
 
 
   #create dir to save results

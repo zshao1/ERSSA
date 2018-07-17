@@ -80,7 +80,7 @@ ggplot2_dotplot = function(deg=NULL, path='.'){
     ggplot2::geom_boxplot() +
     ggplot2::geom_dotplot(binaxis='y', stackdir='center',dotsize=1.5,
                           binwidth = max(deg_df$num_DEG)/150) +
-    ggplot2::theme_bw() +
+    ggplot2::theme_bw(base_size=14) +
     ggplot2::geom_hline(ggplot2::aes(yintercept=full_num_DEG,
                                      color = "Full dataset"), size=0.75,
                         linetype="dashed", show.legend = TRUE) +

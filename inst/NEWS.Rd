@@ -3,6 +3,11 @@
 \alias{ERSSA NEWS}
 \encoding{UTF-8}
 
+\section{Version 0.99.5}{\itemize{
+\item Increase font sizes in plots
+\item Vignette receive major edits to improve clarity
+}}
+
 \section{Version 0.99.4}{\itemize{
 \item
 Update installation instruction in vignette

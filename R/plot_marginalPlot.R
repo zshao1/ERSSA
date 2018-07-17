@@ -82,7 +82,7 @@ ggplot2_marginPlot = function(deg=NULL, stat='mean', path='.'){
   #plot
   gg = ggplot2::ggplot(per_diff_df, ggplot2::aes(replicate, per_diff)) +
     ggplot2::geom_col(width=0.7) +
-    ggplot2::theme_bw() +
+    ggplot2::theme_bw(base_size=14) +
     ggplot2::labs(x='', y=paste0('Percent difference in ',stat,
                                  ' of number of DE genes (%)')) +
     ggplot2::geom_text(ggplot2::aes(label = rounded_per_diff), vjust =
