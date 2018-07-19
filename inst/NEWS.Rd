@@ -5,7 +5,9 @@
 
 \section{Version 0.99.5}{\itemize{
 \item Increase font sizes in plots
-\item Vignette receive major edits to improve clarity
+\item Add line of mean DEG discovery in interect plot
+\item Improve clarity in plots
+\item Vignette receives major edits to improve clarity
 }}
 
 \section{Version 0.99.4}{\itemize{

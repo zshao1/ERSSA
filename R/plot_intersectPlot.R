@@ -37,6 +37,7 @@
 #'   \item{gg_object} {the ggplot2 object, which can then be further
 #'   customized.}
 #'   \item{intersect.dataframe} {the tidy table version used for plotting.}
+#'   \item{deg_dataframe} {the tidy table version of DEG numbers for plotting mean.}
 #'   \item{intersect_genes} {list of vectors containing DE genes with vector
 #'   name indicating the associated replicate level.}
 #'   \item{full_num_DEG} {The number of DE genes with all samples included.}
@@ -73,33 +74,69 @@ ggplot2_intersectPlot = function(deg=NULL, path='.'){
     inters_genes[[rep_i]] = inters_genes_i
   }
 
-  full_num_DEG = length(deg$full$comb_1)
-
   #dataframe for plotting
   rep_levels = sapply(all_rep_levels, function(x)
       strsplit(x, split='_')[[1]][2])
   inters_genes_num = sapply(inters_genes, function(x) length(x))
 
   inters_genes_df = data.frame(replicate_number=rep_levels,
-                           num_intersect_genes=inters_genes_num)
+                               num_intersect_genes=inters_genes_num)
   inters_genes_df$replicate_number = factor(inters_genes_df$replicate_number,
                                             levels = unique(
-                                              inters_genes_df$replicate_number))
+                                                inters_genes_df$replicate_number))
+
+  #convert input list of DEG into tidy format
+  #Loop through all replicate levels except full replicate level
+  num_DEG = c()
+  rep_level = c()
+  comb_ID = c()
+
+  for (rep_i in names(deg)[names(deg) != 'full']){
+
+      deg_rep_i = deg[rep_i][[1]]
+      rep_level = c(rep_level, rep(strsplit(rep_i,split='_')[[1]][2],
+                                   length(names(deg_rep_i))))
+
+      for (comb_i in names(deg_rep_i)){
+
+          deg_comb_i = deg_rep_i[comb_i][[1]]
+          num_DEG = c(num_DEG, length(deg_comb_i))
+          comb_ID = c(comb_ID, strsplit(comb_i, split='_')[[1]][2])
+
+      }
+
+  }
+
+  full_num_DEG = length(deg$full$comb_1)
+
+  #create data frame for plotting
+  deg_df = data.frame(num_DEG = num_DEG, rep_level = rep_level,
+                      comb_ID = comb_ID)
+  deg_df$rep_level = factor(deg_df$rep_level, levels = unique(deg_df$rep_level))
+
+
 
   #plot
   gg = ggplot2::ggplot(inters_genes_df, ggplot2::aes_(x=~replicate_number,
                                                       y=~num_intersect_genes))+
     ggplot2::geom_col(width=0.7) +
     ggplot2::theme_bw(base_size=14) +
+    ggplot2::stat_summary(data = deg_df, ggplot2::aes(rep_level, num_DEG,
+                                                        colour="Mean"),
+                            group=1, fun.y='mean', geom='line', size=1) +
     ggplot2::geom_hline(ggplot2::aes(yintercept=full_num_DEG, color =
-                                       "Full dataset DE genes"), size=0.75,
+                                       "Full dataset"), size=0.75,
                         linetype="dashed", show.legend = TRUE) +
-    ggplot2::scale_colour_manual(values=c("Full dataset DE genes"="blue")) +
+    ggplot2::scale_colour_manual(values=c("Full dataset"="blue",
+                                          "Mean"='red')) +
     ggplot2::labs(x='Replicate number',
                   y='Number of intersecting DE genes', colour="") +
     ggplot2::geom_text(ggplot2::aes_(label = ~num_intersect_genes),
                        vjust = ifelse(inters_genes_df$num_intersect_genes >= 0,
-                                      -0.2, 1.2))
+                                     -0.2, 1.2)) +
+      ggplot2::guides(color = ggplot2::guide_legend(title = 'DE genes',
+          override.aes = list(linetype = c("dashed", "solid"))))
+
 
   #create dir to save results
   folder_path = file.path(path)
@@ -112,6 +149,7 @@ ggplot2_intersectPlot = function(deg=NULL, path='.'){
          height = 15, units = "cm")
 
   return(list(gg_object=gg, intersect.dataframe= inters_genes_df,
+              deg_dataframe = deg_df,
               intersect_genes= inters_genes, full_num_DEG=full_num_DEG))
 }
 

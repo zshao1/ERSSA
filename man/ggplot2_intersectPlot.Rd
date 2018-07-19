@@ -18,6 +18,7 @@ A list is returned containing:
   \item{gg_object} {the ggplot2 object, which can then be further
   customized.}
   \item{intersect.dataframe} {the tidy table version used for plotting.}
+  \item{deg_dataframe} {the tidy table version of DEG numbers for plotting mean.}
   \item{intersect_genes} {list of vectors containing DE genes with vector
   name indicating the associated replicate level.}
   \item{full_num_DEG} {The number of DE genes with all samples included.}

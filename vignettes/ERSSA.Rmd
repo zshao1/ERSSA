@@ -19,12 +19,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-Sample size calculation is an important optimization step in any comparative RNA sequencing (RNA-seq) experiment [1]. Empirical RNA-seq Sample Size Analysis (ERSSA) is a R software package designed to test whether an existing RNA-seq dataset has sufficient biological replicates to detect a majority of the differentially expressed genes (DEGs) between two conditions. Compare to existing RNA-seq sample size analysis algorithms, ERSSA does not rely on any a priori assumptions about the data [2]. Rather, ERSSA takes an user-supplied RNA-seq sample set and determines whether sufficient biological replicates have been included. 
+In comparative RNA sequencing (RNA-seq) experiments, selecting the appropriate sample size is an important optimization step [1]. Empirical RNA-seq Sample Size Analysis (ERSSA) is a R software package designed to test whether an existing RNA-seq dataset has sufficient biological replicates to detect a majority of the differentially expressed genes (DEGs) between two conditions. In contrast to existing RNA-seq sample size analysis algorithms, ERSSA does not rely on any a priori assumptions about the data [2]. Rather, ERSSA takes a user-supplied RNA-seq sample set and evaluates the incremental improvement in identification of DEGs with each increase in sample size up to the total samples provided, enabling the user to determine whether sufficient biological replicates have been included.
 
-Base on the number of replicates already available, the algorithm subsamples at step-wise replicate levels and uses existing differentially expression (DE) analysis softwares (e.g. edgeR [8] and DESeq2 [9]) to identify the number of DEGs at each level. This process is repeated for a sufficient number of times with unique combinations of samples to generate a distribution of the number of DEGs at each replicate level. Once all of the DE comparisons have been processed, the DEG numbers are then plotted and base on the trend in the plot, the user can assess whether sufficient biological replicates have been employed.
+Based on the number of replicates available (N for each of the two conditions), the algorithm subsamples at each step-wise replicate levels (n= 2, 3, 4, ..., N-1) and uses existing differential expression (DE) analysis software (e.g., edgeR [8] and DESeq2 [9]) to measure the number of DEGs. As N increases, the set of all distinct subsamples for a particular n can be very large and experience with ERSSA shows that it is not necessary to evaluate the entire set.  Instead, 30-50 subsamples at each replicate level typically provide sufficient evidence to evaluate the marginal return for each increase in sample size. If the number of DEGs identified is similar for n = N-2, N-1 and N, there may be little to be gained by analyzing further replicates. Conversely, if the number of DEGs identified is still increasing strongly as n approaches N, the user can expect to identify significantly more DEGs if they acquire additional samples. 
 
-When applied to RNA-seq data from studies including GTEx [3], ERSSA demonstrated proficiency in determining whether sufficient biological replicates have been included. Overall, ERSSA can be used as a flexible and easy-to-use tool that offers an alternative approach to identify the appropriate sample size in comparative RNA-seq studies.
-
+When applied to a diverse set of RNA-seq experimental settings (human tissue, human population study and in vitro cell culture), ERSSA demonstrated proficiency in determining whether sufficient biological replicates have been included. Overall, ERSSA can be used as a flexible and easy-to-use tool that offers an alternative approach to identify the appropriate sample size in comparative RNA-seq studies.
 
 # Installation
 
@@ -39,31 +38,32 @@ biocLite("ERSSA")
 
 ## Utility
 
-In this vignette, we will demonstrate ERSSA's analytical approach using a dataset containing 10 healthy human heart and muscle RNA-seq samples from GTEx and ask whether 10 replicates are sufficient to identify a majority of DE genes (adjusted p-value < 0.05 and absolute log(2) fold-change > 1). At end of the ERSSA run, four plots are generated to summarize the results with the most important one shown below. In this plot, we visualize the number of DE genes in each comparison grouped by the number of replicates used. Base on the trend in the plot, we can conclude that 10 biological replicates is likely enough as majority of DE genes have already been discovered with 7-8 replicates. Additional analysis with a larger 25 replicate dataset reached the same conclusion demonstrating the utility of this approach. The rest of this vignette will further explore ERSSA's functionalities using the 10 replicate GTEx dataset.
+In this vignette, we demonstrate ERSSA’s analytical approach using an RNA-seq dataset containing 10 human heart samples and 10 skeletal muscle samples from GTEx [3] and ask whether 10 replicates are sufficient to identify a majority of DE genes (adjusted p-value < 0.05 and |log2(fold-change)| > 1). At the end of the ERSSA run, four plots are generated to summarize the results. For now, let’s briefly focus on the most important of these, the number of DEGs identified as a function of the number of replicates included in the analysis. In the present example, the average number of DEGs discovered increases approximately 2% from n=6 to n=7 with no improvement as n increases to 8 and beyond. This suggests that our example dataset with N=10 replicates is sufficient to identify the vast majority of DEGs. To verify this conclusion, an additional 15 human heart and 15 skeletal muscle samples from GTEx were added and the analysis was repeated with N=25.  The results for n<10 obtained with N=25 gave similar mean and distribution of the number of DEGs identified as those obtained with N=10, validating the utility of the statistical subsampling approach. The rest of this vignette will further explore ERSSA’s functionalities using the 10-replicate GTEx heart vs. muscle dataset. We will also briefly go through two additional examples that help to illustrate the variety of experimental settings where ERSSA can be applied.
+
 
 ```{r, out.width = "500px", echo=FALSE, fig.align = "center"}
-knitr::include_graphics("Figures/GTEx/ERSSA_plot_1_NumOfDEGenes.png")
+knitr::include_graphics("Figures/GTEx/ERSSA_plot_1_NumOfDEGenes_N10_title.png")
+```
+
+```{r, out.width = "500px", echo=FALSE, fig.align = "center"}
+knitr::include_graphics("Figures/GTEx/ERSSA_plot_1_NumOfDEGenes_N25_title.png")
 ```
 
 ## Load example data
 
-The ERSSA package conviniently includes a wrapper function named "erssa" that performs all of the major functions. First, let's load the ERSSA package:
+First, let's load the N=10 GTEx heart and muscle dataset into the R workspace. The data can be loaded into R directly from the ERSSA package using:
 
 ```{r}
 library(ERSSA)
+
+data(condition_table.full)
+data(count_table.full)
 ```
 
-Next, let's load the 10 replicate GTEx muscle and heart dataset. The data can be loaded into R directly from the ERSSA package using:
-
-```{r}
-data(condition_table.full, package="ERSSA")
-data(count_table.full, package="ERSSA")
-```
-
-The original dataset was obtained from the recount2 project [6] which is a systematic effort to generate gene expression count tables from thousands of RNA-seq studies. Here, GTEx heart and muscle count tables were manually downloaded from the [recount2 website](https://jhubiostatistics.shinyapps.io/recount/) and processed by the recount package. The first 10 samples were then selected and a corresponding condition table generated to complete this example dataset. The following code was used to generate the condition and count tables we just loaded into R.
+The original dataset was obtained from the recount2 project [6], which is a systematic effort to generate gene expression count tables from thousands of RNA-seq studies. Here, GTEx heart and muscle count tables were manually downloaded from the [recount2 website](https://jhubiostatistics.shinyapps.io/recount/) and processed by the recount package. The first 10 samples were then selected and a corresponding condition table generated to complete this example dataset. The following code was used to generate the condition and count tables we just loaded into R.
 
 ```{r, eval=FALSE}
-library(recount) #recount package to scale recount raw counts
+library(recount) #recount package to scale raw counts
 
 load('rse_gene_heart.Rdata') # load manually downloaded heart count table
 rse = recount::scale_counts(rse_gene) # use recount package to scale the counts
@@ -99,7 +99,7 @@ count_table = as.data.frame(cbind(selected_counts_heart,
                                   selected_counts_muscle))
 # create condition table
 condition_table = data.frame(name=c(samples_heart, samples_muscle),
-                             condition=c(rep('heart',25), rep('muscle', 25)))
+                             condition=c(rep('heart',10), rep('muscle', 10)))
 ```
 
 For any ERSSA analysis, we need a few essential inputs. First is the RNA-seq count table that contains genes on each row and samples on each column. ERSSA expects the input count table as a dataframe object with gene names as the index and sample IDs as column names. For example, the first few cells of our example count table looks like this:
@@ -108,97 +108,99 @@ For any ERSSA analysis, we need a few essential inputs. First is the RNA-seq cou
 head(count_table.full[,1:2])
 ```
 
-Next, we need to supply a condition table in form of a dataframe object that contains two columns and same number of rows as samples. Column one contains the sample IDs while column two contains the corresponding condition names. Importantly, sample IDs must match between condition and count tables. Additionally, only two conditions are supported. Our full condition table is shown below:
+Next, we need to supply a condition table in the form of a dataframe object that contains two columns and the same number of rows as the total number of samples. Column one contains the sample IDs exactly as they appear in the count tables and column two contains the corresponding condition names. Only two conditions are supported. Our full condition table is shown below:
 
 ```{r}
 condition_table.full
 ```
 
-Finally, we need to specify which condition is the control condition to be used in the DE comparison. In this case, let's set "heart" as the control condition.
+Finally, we need to specify which condition to use as the control in the DE comparison. In this case, let’s set “heart” as the control condition.
 
 ## Run ERSSA
 
-With the count and condition tables prepared, we can now call `erssa` to start the sample size analysis:
+With the count and condition tables prepared, we can now call the main `erssa` wrapper function to start the sample size analysis:
 
 ```{r, eval=FALSE}
-set.seed(1) # for reproducible sample combination generation
+set.seed(1) # for reproducible subsample generation
 ssa = erssa(count_table.full, condition_table.full, DE_ctrl_cond='heart')
 ```
 
-With this command, the `erssa` wrapper function calls various sub-functions to performs the following calculations in sequence:
+With this command, the `erssa` wrapper function calls various ERSSA functions to perform the following calculations in sequence:
 
-1. Filter count table by gene expression level to remove low-expressing genes.
+1. Filter the count table by gene expression level to remove low-expressing genes.
 
-2. Generate unique sample combinations at each replicate level.
+2. Generate unique subsamples (sample combinations) at each replicate level.
 
-3. Call one of the DE softwares to perform DE analysis. Identify the genes that pass test statistic and fold change cutoffs. 
+3. Call one of the DE packages to perform DE analysis. Identify the genes that pass test statistic and fold change cutoffs. 
 
 4. Generate plots to visualize the results.
 
 
 By default, the `erssa` wrapper function will save the generated plots plus all of the generated data in the current working directory. An alternative path can be set using the `path` argument.
 
-Additionally, it may take a while to complete all of the calculations. This is because for each sample combination, a DE analysis is performed by calling the DE software. As a result, runtime is scaled linearly to the number of calls to the DE software. In this case, when hundreds of comparisons (8 replicate levels * 30 combinations at default) need to be done, the entire calculation can become quite time consuming. Fortunately, this issue can be easily resolved by running the DE comparisons in parallel. To do this, ERSSA takes advantage of the `BiocParallel` package to run the DE analysis steps in parallel [7]. This along with other ERSSA capabilities are further explained in the next section.
+Note that, under default setting, the ERSSA calculations may require runtime in order of minutes. This is because for each subsample, a DE analysis is performed by calling the DE software. Thus, runtime is scaled linearly to the number of calls to the DE software and when hundreds of comparisons (in our example dataset: 8 replicate levels * 30 subsamples per level) need to be done, the entire calculation can take some time to complete. Fortunately, this issue can be mitigated by running the DE calculations in parallel (ERSSA uses the `BiocParallel` package to manage this [7]). This along with other ERSSA capabilities are further explained in the next section.
 
 ## ERSSA in more detail
 
-In this section, the steps `erssa` take will be explained in more detail. Additionally, we will also cover additional parameters that can be set to fit the analysis to each user's specific needs. Full descriptions and usage examples can be found in each function's manual.
+In this section, the steps `erssa` take are explained in more detail. Additionally, we will also cover the parameters that can be set to optimize the analysis for each user’s specific needs. Full descriptions and usage examples can be found in each function’s manual.
 
 ### Filter count table
 
-In the first step, `erssa` calls `count_filter` to remove low-expressing genes from the count table. A gene-wise average Count Per Million (CPM) calculation is performed and at default, all genes with average CPM below 1 are removed from further analysis. Filtering away low-expressing genes before differential expression comparison is a widely accepted practice and should be performed here to maximize discovery [4]. The default CPM cutoff can be changed by adjusting the argument `filter_cutoff`. Additionally, if the user perfers to perform their own gene filtering prior to ERSSA (e.g. with the genefilter package [5]), a pre-filtered count table can be supplied and gene filter by ERSSA turned off by setting the argument `counts_filtered=TRUE`. 
+First, `erssa` calls the function `count_filter` to remove low-expressing genes from the count table. Filtering away low-expressing genes before differential expression comparison is a widely accepted practice and should be performed here to maximize discovery [4]. A gene-wise average Count Per Million (CPM) calculation is performed and at default, all genes with average CPM below 1 are removed from further analysis. The default CPM cutoff can be changed by adjusting the argument `filter_cutoff`. Additionally, if the user prefers to perform their own gene filtering prior to ERSSA (e.g., with the genefilter package [5]), a pre-filtered count table can be supplied and gene filter by ERSSA turned off by setting the argument `counts_filtered=TRUE`. 
 
-### Generate sample combinations
+### Generate subsample combinations
 
-Next, ERSSA runs `comb_gen` function to randomly generate the sample combinations. Briefly, at each sub-full replicate level (2 to full-1 replicates), this function employs a random process to sample from the "full" dataset to generate at most 30 unique combinations per level. This step is repeated for both conditions resulting in 2 sets of at most 30 unique combinations. Note that only unique sample combinations are kept; so in the case where we sub-sample 5 samples out of 6 total replicates, only 6 unique combinations that will be generated. Finally, the 2 sets of combinations are randomly merged to form at most 30 unique combinations of control vs. experimental samples. Again, only unique combinations are kept and there may be less than 30 in total per replicate level.
+Next, ERSSA runs `comb_gen` function to randomly generate the subsample combinations. Briefly, at each replicate level (n=2 to N-1), this function employs a random process to sample from the entire dataset to generate at most 30 (at default) unique subsample combinations per condition. Note that only unique sample combinations are kept; so in the case where we select 5 samples out of 6 total replicates, only 6 unique combinations will be generated. Finally, at most 30 unique pairs of control vs. experimental samples are randomly selected for DE analysis by combining the lists from both conditions.
 
-For a majority of datasets we have tested, 30 combinations are typically sufficient to visualize the trend in the DE gene discovery. However, we also noticed that for certain datasets with particuarly high biological variance, ERSSA benefits from running additional combinations at the expense of longer runtime. The number of combinations per replicate level can be set with the `comb_gen_repeat` argument.
+The number of subsample combinations per replicate level can be set with the `comb_gen_repeat` argument. The default value of 30 is based on the observation that for a majority of datasets we have analyzed, 30 combinations proved sufficient to expose the trend in the DE gene discovery as a function of replicate level n. However, we also noticed that for certain datasets with particularly high biological variance, ERSSA benefits from running additional combinations at the expense of longer runtime.  
 
-Since a random process is used to generate the combinations, each individual `erssa` run will generate an unique set of sample combinations as long as all of the unique combinations have not been exhausted as set by the `comb_gen_repeat` argument. However, reproducible results can be achieved by setting the random seed through `set.seed(seed)` before running `erssa`. For example, we can reproduce the plot in section 3.1 using `set.seed(1)`. Additionally, we found it useful to run several random seeds to confirm the overall conclusions are consistent across individual runs.
+Since a random process is employed, each individual `erssa` run will generate an unique set of subsamples as long as all of the unique combinations have not been exhausted as set by the `comb_gen_repeat` argument. However, deterministic results can be achieved by setting the random seed through `set.seed(seed)` before running `erssa`. For example, we can exactly reproduce the plot in section 3.1 using `set.seed(1)`. Generally, we found it useful to run several random seeds to confirm the overall conclusions are consistent across individual runs.
 
 ### Start DE analysis
 
-For each sample combination generated, ERSSA calls a DE software such as edgeR or DESeq2 to perform the DE analysis. At default, edgeR is used as it is slightly faster in runtime compare to DESeq2. Alternatively, DESeq2 can be used instead of edgeR by including the argument: `DE_software='DESeq2'`. The entire process is done under the hood by either `erssa_edger` or `erssa_deseq2` function. For now, only edgeR and DESeq2 are supported as they are two of the most widely used DE softwares. More DE packages can be easily added in the near future. 
+For each subsample (selected pair of control and experiment combinations generated), ERSSA calls a DE software such as edgeR or DESeq2 to perform the DE analysis. At default, edgeR is used as it is slightly faster in runtime compare to DESeq2. Alternatively, DESeq2 can be used instead of edgeR by including the argument: `DE_software='DESeq2'`. The analysis is done under the hood by either `erssa_edger` or `erssa_deseq2` function. For now, only edgeR and DESeq2 are supported as they are two of the most widely used DE software. Additional DE packages can be added in the future.
 
-As previously noted, ERSSA runtime can be significantly shortened by running the DE comparisons in parallel. To do this, ERSSA relies on the `BiocParallel` package with the number of workers (CPUs) set using the `num_workers` argument. Running parallel processing in ERSSA is handled by `erssa_edger_parallel` or `erssa_deseq2_parallel` functions. 
+As previously noted, ERSSA runtime can be significantly shortened by running the DE comparisons in parallel. To do this, ERSSA relies on the `BiocParallel` package with the number of workers (CPUs) set using the `num_workers` argument. Running parallel DE tests in ERSSA is handled by `erssa_edger_parallel` or `erssa_deseq2_parallel` functions. 
 
-One of the main goals of ERSSA is to identify the DE genes among each sample combination. At default, the genes with adjusted p-value (or FDR) < 0.05 and absolute log2 fold-change > 1 are considered to be differentially expressed. Alternatively, a more strigent p-value cutoff can be used with the `DE_cutoff_stat` argument. Likewise, the log2 fold-change cutoff can be set with the `DE_cutoff_Abs_logFC` argument. This may be necessary when the expected gene expression differences are relateively small between the conditions (example: weak stimulation of cells compare to control cells). 
+One of the main goals of ERSSA is to identify the number of DE genes in each of the sample combinations. At default, the genes with adjusted p-value (or FDR) < 0.05 and |log2(fold-change)| > 1 are considered to be differentially expressed. Alternatively, the user can specify a more stringent p-value cutoff using the `DE_cutoff_stat` argument. Likewise, the |log2(fold-change)| cutoff can be set with the `DE_cutoff_Abs_logFC` argument. The latter may be necessary when the expected gene expression differences between the conditions are relatively small (e.g., weak stimulation of cells compare to control cells). 
 
-Once the DE genes have been identified, the DE analysis tables that typically contain results such as fold change, test statistics etc. are not saved in an effort to conserve disk space. If one wishes to retain these results, the tables can be saved as csv files in a new folder in the path specified by setting `DE_save_table=TRUE`.
+Once the DE genes have been identified, the DE analysis tables of results such as fold change, test statistics, etc., are not saved in an effort to conserve disk space. If one wishes to retain these results, the tables can be saved as csv files in a new folder in the path specified by setting `DE_save_table=TRUE`.
 
 
 ### Plot results
 
-Base on the DE analyses, ERSSA generates four summary plots to help the user interpret the results. The first plot displays the number of DEGs discovered in each differential comparison grouped by the number of replicates employed. Boxplots are used to summarize the data while a red solid line represents the mean number of DEGs across the replicate levels. Lastly, a blue dashed line indicates the number of DEGs discovered with the full dataset.
+Based on the DE analyses, ERSSA generates four summary plots to help the user interpret the results. The first plot (generated by `ggplot2_dotplot` function) displays the number of DEGs discovered in each differential comparison grouped by the number of replicates employed. Boxplots are used to summarize the data while a red solid line represents the mean number of DEGs across the replicate levels. Lastly, a blue dashed line indicates the number of DEGs discovered with the full dataset.
 
 ```{r, out.width = "500px", echo=FALSE, fig.align = "center"}
 knitr::include_graphics("Figures/GTEx/ERSSA_plot_1_NumOfDEGenes.png")
 ```
 
-From the plot above, we can interpret that when the full dataset (10 GTEx heart vs. 10 muscle samples) is tested, edgeR detected around 6200 DE genes defined with FDR < 0.05 and absolute log2 fold-change > 1. We also observed a general upward trend in DEG discovery as additional replicates are used in the comparison. At around 7 replicates, we start to see the mean discovery level match closely the level found in the full dataset. Base on this plot, we can make the interpretation that 7 or more replicates are likely sufficient to discovery a majority of DE genes between the two conditions tested. Plot generated by calling the `ggplot2_dotplot` function. 
+In the plot above, the dashed blue line shows that when the full dataset (10 GTEx heart vs. 10 muscle samples) is analyzed, edgeR detects around 6200 DE genes with FDR < 0.05 and |log2(fold-change)| > 1. As expected, the average number of DEG identified increases with the number of replicates used in the analysis. For n>6 replicates, the average number of DEGs identified match closely the number found using the full dataset (N=10). Based on this plot, we can make the interpretation that 7 or more replicates are likely sufficient to discover a majority of genes that are differentially expressed between the two conditions tested. 
 
-The next plot in the series displays the percent difference in the mean discovery as we add additional replicates. Notably, we initially see high, double digit percent increases in discovery which then tapers off to near zero past replicate 7. Base on this plot, we can make a similar conclusion that at least 7 replicates are sufficient for this comparison. While the mean is plotted by default, the user can select to plot the median by set `marginalPlot_stat='median'`. Plot generated by calling the `ggplot2_marginPlot` function. 
+The next plot ERSSA generates shows the percent difference in the mean number of DEGs identified as a function of the number of replicates (generated by `ggplot2_marginPlot` function). Initially (e.g., increasing n to 3 from 2), each additional replicate brings high (double digit percent) increases in discovery.  At the other end, the marginal change in the average number of DEG identified becomes very small (less than 1% change when increasing n to 8 from 7, to 9 from 8 and to 10 from 9). This plot reinforces the conclusion that increasing the number of replicates beyond 7 hardly changes the mean number of DEGs identified. While the mean is plotted by default, the user can select to plot the median by setting `marginalPlot_stat='median'`. 
 
 ```{r, out.width = "500px", echo=FALSE, fig.align = "center"}
 knitr::include_graphics("Figures/GTEx/ERSSA_plot_2_MarginalNumOfDEGenes.png")
 ```
 
-The third plot shows the number of DEGs that have been identified in all of the comparisons done at a particular replicate level. Perhaps, not suprisingly, we see that as additional replicates are used, there is a upward trend in the identity of the DEGs discovered. This plot mainly helps the user understand the amount of consistency among all of the combinations tested at each replicate level. Additionally, it might be interesting to further investigate the 4,971 DE genes that are discovered in all 30 combinations with 9 replicates. This list of high confidence DEGs is likely more reliable than the list discovered with the full dataset. Please refer to the manual page of the function `ggplot2_intersectPlot` to learn more about how to extract these intersecting gene lists. 
+The third plot shows the number of DEGs that are identified in all of the DE tests (the interesect) at a particular replicate level (generated by `ggplot2_intersectPlot` function). Here, we typically see increasing the number of replicates used increases the number of genes that are identified in all tests. This plot mainly helps the user understand the amount of consistency among all of the subsample combinations tested at each replicate level. Additionally, it might be interesting to further investigate the 4,971 DE genes that are discovered in all 30 DE tests with 9 replicates. This list of high confidence DEGs is perhaps more reliable than the list discovered with the full dataset. Please refer to the manual page of the function `ggplot2_intersectPlot` to learn more about how to extract these intersecting gene lists. 
 
 ```{r, out.width = "500px", echo=FALSE, fig.align = "center"}
 knitr::include_graphics("Figures/GTEx/ERSSA_plot_3_IntersectDEGenes.png")
 ```
 
-The last plot helps to visualize the True Positive Rate (TPR) and False Positive Rate (FPR) associated with each comparison. Here, we set the list of DEGs found using the full dataset as the ground truth. Not suprisingly, we see improved TPR as more replicates are used and a general decrease in FPR. To summarize the rates, we also, by default, plot the mean TPR and FPR at each replicate level in black-bordered dimonds. Alternatively, the median can be plotted by setting `TPR_FPR_stat='median'`. Similar to the third plot, the TPR-FPR plot helps the user understand the variability among the comparisons. For this particular dataset, we see TPR improved substantially with at least 5 replicates while the improvement past 7 replicates become increasingly marginal. The trend in FPR is also very interesting, as we see initial improvement in TPR is paired with higher FPR. Generally, high TPR and low FPR are favorable. Plot generated by calling the `ggplot2_TPR_FPRPlot` function. 
+The last plot helps to visualize the True Positive Rate (TPR) and False Positive Rate (FPR) as a function of the number of replicates (generated by `ggplot2_TPR_FPRPlot` function). Here, we set the list of DEGs found using the full dataset as the ground truth. It is worth noting that using the full dataset as the ground truth may not be appropriate for all datasets. This is especially true when the dataset is under powered to identify the DEGs between conditions. 
+
+In the TPR, FPR plot, the dots show the (TPR, FPR) for each of the subsamples analyzed while the black-bordered diamond shows the mean (TPR, FPR) at each replicate level. Alternatively, the median can be plotted by setting `TPR_FPR_stat='median'`. Notice that, at small numbers of replicates, both TPR and FPR increase. Only when the number of replicates is sufficiently large (here n>4) does increasing number of replicates provide the expected increase of TPR and decrease of FPR. Similar to the intersect DE genes plot, the TPR-FPR plot helps the user understand the variability among the DE tests. In this particular dataset, we see TPR improved substantially with at least 5 replicates while the improvement past 7 replicates becomes increasingly marginal.
 
 ```{r, out.width = "500px", echo=FALSE, fig.align = "center"}
 knitr::include_graphics("Figures/GTEx/ERSSA_plot_4_FPRvTPRPlot.png")
 ```
 
-All four of the plots above are generated by ERSSA using the ggplot2 package [13] with the ggplot2 objects as well as the plotted data saved to disk. From there, the user can easily replace commands or add new ones to customarize the plots to fit their preference. Additionally, the raw data generated during the calcuations can be used if the user wishes to generated additional plots not included in the ERSSA package. The following codes serve as a demonstration of the customerization capability based on ggplot2.
+All four of the plots above are generated by ERSSA using the ggplot2 package [13] with the ggplot2 objects as well as the plotted data saved to disk. From there, the user can easily replace commands or add new ones to customize the plots according to their preference. Additionally, the raw data generated during the calculations are available to the user to generated additional plots not included in the ERSSA package. The following codes serve as a simple demonstration of the customization capability based on ggplot2.
 
 ```{r, eval=FALSE}
-set.seed(1) # for reproducible sample combination generation
+set.seed(1) # for reproducible subsample combination generation
 
 # Run erssa with example dataset.
 # ssa object now contains all of the generated data and the ggplot2 objects
@@ -207,8 +209,8 @@ ssa = erssa(count_table.full, condition_table.full, DE_ctrl_cond='heart')
 de_plot = ssa$gg.dotPlot.obj$gg_object 
 # Change y-axis label to be more descriptive
 de_plot = de_plot + ylab('Number of differentially expressed genes')
-# Save the plot in the current working directory with new dimensions and a lower
-# resolution.
+# Save the plot in the current working directory with new dimensions and a
+# lower resolution.
 ggsave(filename='ERSSA_plot_1_NumOfDEGenes.png',
          plot=de_plot, dpi=100, width = 15,
          height = 10, units = "cm")
@@ -220,12 +222,14 @@ knitr::include_graphics("Figures/GTEx/ERSSA_plot_1_NumOfDEGenes_lowRes.png")
 
 ## Additional examples
 
-### Montgomery-Pickrell
+### Human population dataset
 
-As part of the International HapMap Project, RNA-seq was performed on lymphoblastoid cell lines derived from 60 European and 69 Nigerian individuals [10-11]. Here, we manually downloaded preprocessed count and condition tables from the original [ReCount project](http://bowtie-bio.sourceforge.net/recount/) to serve as inputs for ERSSA. In this case, running ERSSA on the entire dataset is quite time consuming as well as unnecessary, so 25 replicates from each condition are selected for ERSSA analysis.
+Comparison of two human populations illustrates the value of ERSSA when one is confronted with data sets that have a high degree of biological variability. The data for this example is available as part of the International HapMap Project, which performed RNA-seq on lymphoblastoid cell lines derived from 60 European and 69 Nigerian individuals [10,11]. Here, we manually downloaded preprocessed count and condition tables from the original [ReCount project](http://bowtie-bio.sourceforge.net/recount/) to serve as inputs for ERSSA. In this case, running ERSSA on the entire dataset is quite time consuming as well as unnecessary, so 25 replicates from each group were selected for ERSSA analysis.
+
+Compare to the previous GTEx dataset that compared heart to muscle, the HapMap dataset's DEG discovery increased much more slowly with additional replicates. It is also worth noting the large variability in the discovery when few replicates are used. For this dataset, the number of subsample combinations tested was increased from the default 30 to 50 to reduce the algorithm's sensitivity to outliers in any particular replicate level. Unlike the GTEx dataset, we see that at least 15 replicates are needed to capture a majority of DEGs. Additionally, the mean discovery line hovers near the full dataset line past 17 replicates, serving as a good indication that we already have sufficient replicates to discovery a majority of DEGs. 
 
 ```{r, eval=FALSE}
-set.seed(1) # for reproducible sample combination generation
+set.seed(1) # for reproducible subsample combination generation
 
 # Load count data, select 25 samples from each condition
 # Montgomery (European) vs. Pickrell (Nigerian)
@@ -250,14 +254,13 @@ knitr::include_graphics("Figures/MP/ERSSA_plot_3_IntersectDEGenes.png")
 knitr::include_graphics("Figures/MP/ERSSA_plot_4_FPRvTPRPlot.png")
 ```
 
-Compare to the previous GTEx dataset, the HapMap dataset's DEG discovery increased much more slowly with additional replicates. It is also worth noting the large variability in the discovery when few replicates are used. For this dataset, the number of combinations tested was increased from the default 30 to 50 to reduce the algorithm's sensitivity to outliers in any particular replicate level. Unlike the GTEx dataset, we see that at least 15 replicates are needed to capture a majority of DEGs. Additionally, the mean discovery line hovers near the full dataset line past 17 replicates, serving as a good indication that we have sufficient replicates to discovery a majority of DEGs. 
 
-### Fossum
+### Cell culture dataset
 
-In this study, Fossum and coworkers were interested in studying EHF's effect on the transcriptome as a transcriptional regulator [12]. As part of the study, EHF expression was depleted using siRNA and compared to negative control siRNA samples. For both conditions, 5 cell culture replicates were used (compare to the GTEx and HapMap datasets, 5 replicates is more representative of the typical number of replicates used in most RNA-seq studies). Here, we obtained count and condition tables from [recount2 website](https://jhubiostatistics.shinyapps.io/recount/) to serve as input for ERSSA. We load the data and run ERSSA using:
+In this example, data were obtained by Fossum and coworkers in a study of the transcriptome response to regulation of an E26-related transcription factor, ETS homologous factor (EHF) [12]. As part of the study, EHF expression was depleted using siRNA and compared to negative control siRNA samples. For both conditions, 5 cell culture replicates were used (representative of the typical number of replicates used in most RNA-seq studies). Count and condition tables from [recount2 website](https://jhubiostatistics.shinyapps.io/recount/) will serve as inputs for ERSSA. Here, we load the data and run ERSSA using:
 
 ```{r, eval=FALSE}
-set.seed(1) # for reproducible sample combination generation
+set.seed(1) # for reproducible subsample combination generation
 
 # Study-specific condition table downloaded from recount2 website
 # load condition_table, keep only Control and EHF_siRNA samples
@@ -280,13 +283,14 @@ ssa = erssa(count_table = count_table, condition_table = condition_table,
 ```
 
 ```{r, out.width = "500px", echo=FALSE, fig.align = "center"}
-knitr::include_graphics("Figures/Fossum/ERSSA_plot_1_NumOfDEGenes.png")
+knitr::include_graphics("Figures/Fossum/ERSSA_plot_1_NumOfDEGenes_AbslogFC1_title.png")
+knitr::include_graphics("Figures/Fossum/ERSSA_plot_1_NumOfDEGenes_AbslogFC0.5_title.png")
 knitr::include_graphics("Figures/Fossum/ERSSA_plot_2_MarginalNumOfDEGenes.png")
 knitr::include_graphics("Figures/Fossum/ERSSA_plot_3_IntersectDEGenes.png")
 knitr::include_graphics("Figures/Fossum/ERSSA_plot_4_FPRvTPRPlot.png")
 ```
 
-For this particular comparison, we found very few DEGs with absolute log2 fold-change above 1, so the cutoff is adjusted to 0.5. In contrast to the two previous datasets, ERSSA plots suggest this study would benefit from including additional replicates. In the percent difference plot, moving from including 4 replicates to 5 replicates improved discovery significantly by 11.2%. Base on the trend, adding additional replicates are likely to improve DEG discovery by high single digit percentages. Additionally, the TPR-FPR plot shows the mean TPR measured with 4 replicate combinations is quite low at around 0.75. Additionally replicates will likely further improve TPR into the 0.8-0.9 range, which is more ideal. While, in certain cases, including additional replicates may not be feasible or economical, ERSSA allows user to answer the question whether their DE analysis would benefit from more biological replicates.
+For this particular comparison, we found very few DEGs with |log2(fold-change)| > 1, so the cutoff is adjusted to 0.5. In contrast to the two previous datasets, ERSSA plots suggest this study would benefit from including additional replicates. In the percent difference plot, moving from 4 replicates to 5 replicates improved discovery significantly by 11.2%. Base on the trend, adding additional replicates will likely to continue improve DEG discovery by high single digit percentages. Additionally, the TPR-FPR plot shows the mean TPR measured with 4 replicate subsamples is quite low at around 0.75. Of course, the caveat here is that since the discovery would most likely benefit from including additional replicates, the list of DEGs from the full dataset (N=5) is a poor representation of the ground truth. While, in certain cases, including additional replicates may not be feasible or economical, ERSSA allows user to answer the question whether their DE analysis would benefit from more biological replicates.
 
 
 # Built with

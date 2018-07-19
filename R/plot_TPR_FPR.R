@@ -124,7 +124,7 @@ ggplot2_TPR_FPRPlot = function(deg=NULL, count_table.filtered=NULL,
                        ggplot2::aes(FPR, TPR, colour=replicate)) +
       ggplot2::geom_point(size=2) +
       ggplot2::theme_bw(base_size=14) +
-      ggplot2::labs(x='FPR', y="TPR") +
+      ggplot2::labs(x='FPR', y="TPR", colour ='Number of \nreplicates') +
       ggplot2::geom_point(data=stats::aggregate(TPR_FPR.dataframe[,1:2],
                                          list(TPR_FPR.dataframe$replicate),
                                         FUN=stat),
