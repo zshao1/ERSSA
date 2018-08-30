@@ -4,7 +4,7 @@
 \alias{comb_gen}
 \title{Calculate unique combinations of samples at varying replicate number}
 \usage{
-comb_gen(condition_table = NULL, n_repetition = 30, path = ".")
+comb_gen(condition_table = NULL, n_repetition = 30)
 }
 \arguments{
 \item{condition_table}{A condition table with two columns and each sample
@@ -15,9 +15,6 @@ condition (e.g. Control, Treatment).}
 at each replicate level. More tests will be performed with a bigger value,
 but run time also increases linearly. Default set to 30 unique combinations
 at maximum.}
-
-\item{path}{The path to which the combinations will be saved as a csv
-table. Default to current working directory.}
 }
 \value{
 A list of character vectors containing sample combinations. Each
@@ -51,15 +48,15 @@ x number of unique combinations selected. When total unique combination
 is smaller than x, then all unique combinations are selected.
 
 Selected combinations of samples at each replicate number are then
-returned. Combinations are also saved as a table to the drive.
+returned.
 }
 \examples{
 # Use example condition_table
-# example dataset containing 1000 genes, 4 replicates and 10 comb. per rep.
+# example dataset containing 1000 genes, 4 replicates and 5 comb. per rep.
 # level
 data(condition_table.partial, package = "ERSSA")
 
-combinations.partial = comb_gen(condition_table.partial, n_repetition=10)
+combinations.partial = comb_gen(condition_table.partial, n_repetition=5)
 
 }
 \author{

@@ -4,7 +4,7 @@
 \alias{count_filter}
 \title{Filter RNA-seq expression table}
 \usage{
-count_filter(count_table = NULL, cutoff = 1, path = ".")
+count_filter(count_table = NULL, cutoff = 1)
 }
 \arguments{
 \item{count_table}{A RNA-seq count matrix with genes on each row and samples
@@ -12,8 +12,6 @@ on each column.}
 
 \item{cutoff}{Any gene with average CPM below this cutoff value will be
 filtered out.}
-
-\item{path}{Path to save the filtered count table}
 }
 \value{
 The filtered count table.
@@ -21,10 +19,6 @@ The filtered count table.
 \description{
 \code{count_filter} function filters the RNA-seq count table to remove
 non- and low-expression genes at an defined average CPM cutoff (Default=1).
-}
-\details{
-The filtered count table is saved to the drive in a file named
-"ERSSA_FilteredCounts.csv".
 }
 \examples{
 # load simple GTeX example count table

@@ -6,7 +6,8 @@
 \usage{
 erssa_edger_parallel(count_table.filtered = NULL, combinations = NULL,
   condition_table = NULL, control = NULL, cutoff_stat = 0.05,
-  cutoff_Abs_logFC = 1, save_table = FALSE, path = ".", num_workers = 1)
+  cutoff_Abs_logFC = 1, save_table = FALSE, path = ".",
+  num_workers = 1)
 }
 \arguments{
 \item{count_table.filtered}{Count table pre-filtered to remove non- to low-
@@ -64,8 +65,6 @@ are filtered by FDR and log2FC values and only the filtered gene
 names are saved for further analysis. However, it is also possible
 to save all of the generated TopTags table to the drive for additional
 analysis that is outside the scope of this package.
-
-The returend list of DE genes is also saved to the drive at specified path.
 }
 \examples{
 # load example filtered count_table, condition_table and combinations
@@ -78,8 +77,8 @@ data(condition_table.partial, package = "ERSSA")
 
 # run erssa_edger_parallel with heart condition as control
 deg.partial = erssa_edger_parallel(count_table.filtered.partial,
-combinations.partial
-, condition_table.partial, control='heart', num_workers=1)
+combinations.partial, condition_table.partial,
+control='heart', num_workers=1)
 
 }
 \references{

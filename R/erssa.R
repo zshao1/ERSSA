@@ -52,10 +52,9 @@
 #' employed by specifying the num_workers argument. Parallel computing
 #' requires BiocParallel package.
 #'
-#' All runtime parameters are saved in a log file named "erssa.log". The
-#' condition table used is saved as a csv file named "ERSSA_ConditionTable.csv".
-#' The list of objects returned is also saved to the disk for easy loading at
-#' at a later time for further modification.
+#' The results including list of DE genes and ggplot2 objects are returned.
+#' All runtime parameters can optionally be saved in a log file named
+#' "erssa.log".
 #'
 #' @param count_table A RNA-seq count matrix with genes on each row and samples
 #' on each column. If count_table has already been filtered to remove non- or
@@ -91,10 +90,13 @@
 #' @param TPR_FPR_stat The statistics used to summarize TPR and FPR at
 #' each replicate level in ggplot2_TPR_FPRPlot function. Options include
 #' 'mean', 'median'. Default = 'mean'.
-#'
 #' @param path The path to which the plots and results will be saved. Default
 #' to current working directory.
 #' @param num_workers Number of nodes to use for parallel computing the DE tests
+#' @param save_log Boolean. Whether to save runtime parameter in log file.
+#' Defualt to false.
+#' @param save_plot Boolean. Wehther to save ggplot2 plots to drive. Default to
+#' true.
 #'
 #' @return A list of objects generated during the analysis is returned:
 #' \itemize{
@@ -118,7 +120,7 @@
 #' @author Zixuan Shao, \email{Zixuanshao.zach@@gmail.com}
 #'
 #' @examples
-#' # load example dataset containing 1000 genes, 4 replicates and 10 comb. per
+#' # load example dataset containing 1000 genes, 4 replicates and 5 comb. per
 #' # rep. level
 #' data(condition_table.partial, package = "ERSSA")
 #' data(count_table.partial, package = "ERSSA")
@@ -146,6 +148,8 @@
 #' Springer, Singapore, 2017. https://doi.org/10.1007/978-981-10-0126-0_22.
 #'
 #' @export
+#'
+#' @importFrom utils write.csv
 
 
 erssa = function(count_table=NULL, condition_table=NULL, DE_ctrl_cond=NULL,
@@ -153,137 +157,150 @@ erssa = function(count_table=NULL, condition_table=NULL, DE_ctrl_cond=NULL,
                  comb_gen_repeat=30, DE_software='edgeR', DE_cutoff_stat = 0.05,
                  DE_cutoff_Abs_logFC = 1, DE_save_table=FALSE,
                  marginalPlot_stat='mean', TPR_FPR_stat='mean',
-                 path='.', num_workers=1){
+                 path='.', num_workers=1, save_log=FALSE,
+                 save_plot=TRUE){
 
-  #check all required arguments supplied
-  if (is.null(count_table)){
-    stop('Missing required count_table argument')
-  } else if (is.null(condition_table)){
-    stop("Missing required condition_table argument")
-  } else if (is.null(DE_ctrl_cond)){
-    stop("Missing name of control condition in comparison")
-  } else if (!(is.data.frame(count_table))){
-    stop('count_table is not an expected data.frame object')
-  } else if (!(is.data.frame(condition_table))){
-    stop('condition_table is not an expected data.frame object')
-  } else if (length(unique(sapply(count_table, class)))!=1){
-    stop(paste0('More than one data type detected in count table, please ',
-                'make sure count table contains only numbers and that the ',
-                'list of gene names is the data.frame index'))
-  }
+    # check all required arguments supplied
+    if (is.null(count_table)){
+        stop('Missing required count_table argument')
+    } else if (is.null(condition_table)){
+        stop("Missing required condition_table argument")
+    } else if (is.null(DE_ctrl_cond)){
+        stop("Missing name of control condition in comparison")
+    } else if (!(is.data.frame(count_table))){
+        stop('count_table is not an expected data.frame object')
+    } else if (!(is.data.frame(condition_table))){
+        stop('condition_table is not an expected data.frame object')
+    } else if (length(unique(sapply(count_table, class)))!=1){
+        stop(paste0('More than one data type detected in count table, please ',
+                    'make sure count table contains only numbers and that the ',
+                    'list of gene names is the data.frame index'))
+    } else if (!(DE_software %in% c('edgeR','DESeq2'))) {
+        stop('only edgeR or DEseq2 supported')
+    }
 
-  #start log file
-  log = file(file.path(path, "ERSSA.log"))
-  log_l = c('-------------', 'ERSSA run log', '-------------',' ')
-  log_l = c(log_l, paste0('Start time: ',Sys.time()))
-
-
-
-  #filter the count table by average CPM value cutoff
-  #default is to filter the count_table with cutoff=1
-  if (counts_filtered==FALSE){
-    count_table.filtered = ERSSA::count_filter(count_table=count_table,
-                                               cutoff=filter_cutoff, path=path)
-  } else if (counts_filtered==TRUE){
-    count_table.filtered = count_table
-  } else {
-    stop("counts_filtered is a boolean variable!")
-  }
+    if (save_log==TRUE){
+        # start log file
+        log = file(file.path(path, "ERSSA.log"))
+        log_l = c('-------------', 'ERSSA run log', '-------------',' ')
+        log_l = c(log_l, paste0('Start time: ',Sys.time()))
+    }
 
 
-  #generate sample name combinations at various replicate levels
-  combinations = ERSSA::comb_gen(condition_table=condition_table,
-                                 n_repetition=comb_gen_repeat,
-                                 path=path)
 
 
-  #run DE software to generate DE gene list
-  if (DE_software=='edgeR' & num_workers==1){
-    deg = ERSSA::erssa_edger(count_table.filtered=count_table.filtered,
-                             combinations=combinations,
-                             condition_table=condition_table,
-                             control=DE_ctrl_cond, cutoff_stat = DE_cutoff_stat,
-                             cutoff_Abs_logFC = DE_cutoff_Abs_logFC,
-                             save_table=DE_save_table, path=path)
+    # filter the count table by average CPM value cutoff
+    # default is to filter the count_table with cutoff=1
+    if (counts_filtered==FALSE){
+        count_table.filtered = count_filter(count_table=count_table,
+                                            cutoff=filter_cutoff)
+    } else if (counts_filtered==TRUE){
+        count_table.filtered = count_table
+    } else {
+        stop("counts_filtered needs to be a boolean variable!")
+    }
 
-  } else if (DE_software=='DESeq2' & num_workers==1){
-    deg = ERSSA::erssa_deseq2(count_table.filtered=count_table.filtered,
-                              combinations=combinations,
-                              condition_table=condition_table,
-                              control=DE_ctrl_cond,
-                              cutoff_stat = DE_cutoff_stat,
-                              cutoff_Abs_logFC = DE_cutoff_Abs_logFC,
-                              save_table=DE_save_table, path=path)
 
-  } else if (DE_software=='edgeR' & num_workers>1){
-    deg = ERSSA::erssa_edger_parallel(
-      count_table.filtered=count_table.filtered, combinations=combinations,
-      condition_table=condition_table, control=DE_ctrl_cond,
-      cutoff_stat = DE_cutoff_stat,cutoff_Abs_logFC = DE_cutoff_Abs_logFC,
-      save_table=DE_save_table, path=path, num_workers=num_workers)
+    # generate sample name combinations at various replicate levels
+    combinations = comb_gen(condition_table=condition_table,
+                            n_repetition=comb_gen_repeat)
 
-  } else if (DE_software=='DESeq2' & num_workers>1){
-    deg = ERSSA::erssa_deseq2_parallel(
-      count_table.filtered=count_table.filtered, combinations=combinations,
-      condition_table=condition_table, control=DE_ctrl_cond,
-      cutoff_stat = DE_cutoff_stat, cutoff_Abs_logFC = DE_cutoff_Abs_logFC,
-      save_table=DE_save_table, path=path, num_workers=num_workers)
-  }
 
-  #plot number of DE genes as dot plot and boxplot
-  gg_dot = ERSSA::ggplot2_dotplot(deg=deg, path=path)
+    # run DE software to generate DE gene list
+    if (DE_software=='edgeR' & num_workers==1){
+        deg = erssa_edger(count_table.filtered=count_table.filtered,
+                          combinations=combinations,
+                          condition_table=condition_table,
+                          control=DE_ctrl_cond, cutoff_stat = DE_cutoff_stat,
+                          cutoff_Abs_logFC = DE_cutoff_Abs_logFC,
+                          save_table=DE_save_table, path=path)
 
-  #plot the marginal increase in DE genes with more replicates
-  gg_margin = ERSSA::ggplot2_marginPlot(deg=deg, stat=marginalPlot_stat,
-                                        path=path)
+    } else if (DE_software=='DESeq2' & num_workers==1){
+        deg = erssa_deseq2(count_table.filtered=count_table.filtered,
+                           combinations=combinations,
+                           condition_table=condition_table,
+                           control=DE_ctrl_cond,
+                           cutoff_stat = DE_cutoff_stat,
+                           cutoff_Abs_logFC = DE_cutoff_Abs_logFC,
+                           save_table=DE_save_table, path=path)
 
-  #plot the number of DE genes that is common across combinations
-  gg_intersect = ERSSA::ggplot2_intersectPlot(deg=deg, path=path)
+    } else if (DE_software=='edgeR' & num_workers>1){
+        deg = erssa_edger_parallel(
+            count_table.filtered=count_table.filtered,
+            combinations=combinations,
+            condition_table=condition_table, control=DE_ctrl_cond,
+            cutoff_stat = DE_cutoff_stat,
+            cutoff_Abs_logFC = DE_cutoff_Abs_logFC,
+            save_table=DE_save_table, path=path, num_workers=num_workers)
 
-  #plots the TPR and FPR of DE detection using the full dataset's list of DE
-  #gene as the ground truth
-  gg_TPR_FPR = ERSSA::ggplot2_TPR_FPRPlot(deg=deg, count_table.filtered=
-                                          count_table.filtered,
-                                          stat=TPR_FPR_stat,
-                                          path=path)
+    } else if (DE_software=='DESeq2' & num_workers>1){
+        deg = erssa_deseq2_parallel(
+            count_table.filtered=count_table.filtered,
+            combinations=combinations,
+            condition_table=condition_table, control=DE_ctrl_cond,
+            cutoff_stat = DE_cutoff_stat,
+            cutoff_Abs_logFC = DE_cutoff_Abs_logFC,
+            save_table=DE_save_table, path=path, num_workers=num_workers)
+    }
 
-  #finish log file
-  log_l = c(log_l, paste0('Finish time: ',Sys.time()), ' ')
-  log_l = c(log_l, paste0('Control condition: ', DE_ctrl_cond))
+    # plot number of DE genes as dot plot and boxplot
+    gg_dot = ggplot2_dotplot(deg=deg, path=path, save_plot=save_plot)
 
-  log_l = c(log_l, paste0('Count table filtered by ERSSA: ', !counts_filtered))
+    # plot the marginal increase in DE genes with more replicates
+    gg_margin = ggplot2_marginPlot(deg=deg, stat=marginalPlot_stat,
+                                   path=path, save_plot=save_plot)
 
-  if (counts_filtered == FALSE){
-    log_l = c(log_l, paste0('Count table CPM filter: ', filter_cutoff))
-  }
+    # plot the number of DE genes that is common across combinations
+    gg_intersect = ggplot2_intersectPlot(deg=deg, path=path,
+                                         save_plot=save_plot)
 
-  log_l = c(log_l, paste0('Num. of unique sample combination tested: ',
-                          comb_gen_repeat))
-  log_l = c(log_l, paste0('DE software used: ', DE_software))
-  log_l = c(log_l, paste0('Statistical cutoff for DE: ',
-                          DE_cutoff_stat))
-  log_l = c(log_l, paste0('Absolute log2FC cutoff for DE: ',
-                          DE_cutoff_Abs_logFC))
-  log_l = c(log_l, paste0('DE tables saved to drive: ', DE_save_table))
-  log_l = c(log_l, paste0('Statistic used in marginal plot: ',
-                          marginalPlot_stat))
-  log_l = c(log_l, paste0('Number of CPU nodes used: ', num_workers))
-  writeLines(log_l, log)
-  close(log)
+    # plots the TPR and FPR of DE detection using the full dataset's list of DE
+    # gene as the ground truth
+    gg_TPR_FPR = ggplot2_TPR_FPRPlot(deg=deg, count_table.filtered=
+                                         count_table.filtered,
+                                     stat=TPR_FPR_stat,
+                                     path=path, save_plot=save_plot)
 
-  #save the condition table used to drive
-  utils::write.csv(x = condition_table,
-                   file = file.path(path, 'ERSSA_ConditionTable.csv'))
 
-  #create a list of ERSSA generated objects
-  ERSSA.objects = list(count_table.filtered=count_table.filtered,
-                       samp.name.comb=combinations,
-                       list.of.DE.genes=deg,
-                       gg.dotPlot.obj = gg_dot,
-                       gg.marinPlot.obj=gg_margin,
-                       gg.intersectPlot.obj = gg_intersect,
-                       gg.TPR_FPRPlot.obj=gg_TPR_FPR)
-  save(ERSSA.objects, file = file.path(path,'ERSSA_ERSSAObjects.rda'))
+    if (save_log==TRUE){
+        # finish log file
+        log_l = c(log_l, paste0('Finish time: ',Sys.time()), ' ')
+        log_l = c(log_l, paste0('Control condition: ', DE_ctrl_cond))
 
-  return(ERSSA.objects)
+        log_l = c(log_l, paste0('Count table filtered by ERSSA: ',
+                                !counts_filtered))
+
+        if (counts_filtered == FALSE){
+            log_l = c(log_l, paste0('Count table CPM filter: ', filter_cutoff))
+        }
+
+        log_l = c(log_l, paste0('Num. of unique sample combination tested: ',
+                                comb_gen_repeat))
+        log_l = c(log_l, paste0('DE software used: ', DE_software))
+        log_l = c(log_l, paste0('Statistical cutoff for DE: ',
+                                DE_cutoff_stat))
+        log_l = c(log_l, paste0('Absolute log2FC cutoff for DE: ',
+                                DE_cutoff_Abs_logFC))
+        log_l = c(log_l, paste0('DE tables saved to drive: ', DE_save_table))
+        log_l = c(log_l, paste0('Statistic used in marginal plot: ',
+                                marginalPlot_stat))
+        log_l = c(log_l, paste0('Number of CPU nodes used: ', num_workers))
+        writeLines(log_l, log)
+        close(log)
+    }
+
+    # save the condition table used to drive
+    write.csv(x = condition_table,
+              file = file.path(path, 'ERSSA_ConditionTable.csv'))
+
+    # create a list of ERSSA generated objects
+    ERSSA.objects = list(count_table.filtered=count_table.filtered,
+                         samp.name.comb=combinations,
+                         list.of.DE.genes=deg,
+                         gg.dotPlot.obj = gg_dot,
+                         gg.marinPlot.obj=gg_margin,
+                         gg.intersectPlot.obj = gg_intersect,
+                         gg.TPR_FPRPlot.obj=gg_TPR_FPR)
+
+    return(ERSSA.objects)
 }

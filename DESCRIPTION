@@ -1,8 +1,8 @@
 Package: ERSSA
 Type: Package
 Title: Empirical RNA-seq Sample Size Analysis
-Version: 0.99.5
-Date: 2018-04-10
+Version: 0.99.6
+Date: 2018-08-28
 Author: Zixuan Shao [aut, cre]
 Maintainer: Zixuan Shao <Zixuanshao.zach@gmail.com>
 Description: The ERSSA package takes user supplied RNA-seq differential expression 
@@ -12,12 +12,12 @@ Description: The ERSSA package takes user supplied RNA-seq differential expressi
 	with their RNA-seq dataset.
 Depends: R (>= 3.5.0)
 Imports: 
-	edgeR (>= 3.23.2),
-	DESeq2 (>= 1.21.3),
-	ggplot2 (>= 2.2.1),
+	edgeR (>= 3.23.3),
+	DESeq2 (>= 1.21.16),
+	ggplot2 (>= 3.0.0),
 	RColorBrewer (>= 1.1-2),
 	plyr (>= 1.8.4),
-	BiocParallel (>= 1.15.5),
+	BiocParallel (>= 1.15.8),
 	grDevices,
 	stats,
 	utils
@@ -28,4 +28,4 @@ License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/zshao1/ERSSA
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

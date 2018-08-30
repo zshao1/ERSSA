@@ -62,8 +62,6 @@ are filtered by padj and log2FoldChange values and only the filtered gene
 names are saved for further analysis. However, it is also possible
 to save all of the generated result tables to the drive for additional
 analysis that is outside the scope of this package.
-
-The returend list of DE genes is also saved to the drive at specified path.
 }
 \examples{
 # load example filtered count_table, condition_table and combinations

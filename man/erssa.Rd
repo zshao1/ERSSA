@@ -4,11 +4,12 @@
 \alias{erssa}
 \title{Empirical RNA-seq Sample Size Analysis}
 \usage{
-erssa(count_table = NULL, condition_table = NULL, DE_ctrl_cond = NULL,
-  filter_cutoff = 1, counts_filtered = FALSE, comb_gen_repeat = 30,
-  DE_software = "edgeR", DE_cutoff_stat = 0.05, DE_cutoff_Abs_logFC = 1,
-  DE_save_table = FALSE, marginalPlot_stat = "mean",
-  TPR_FPR_stat = "mean", path = ".", num_workers = 1)
+erssa(count_table = NULL, condition_table = NULL,
+  DE_ctrl_cond = NULL, filter_cutoff = 1, counts_filtered = FALSE,
+  comb_gen_repeat = 30, DE_software = "edgeR", DE_cutoff_stat = 0.05,
+  DE_cutoff_Abs_logFC = 1, DE_save_table = FALSE,
+  marginalPlot_stat = "mean", TPR_FPR_stat = "mean", path = ".",
+  num_workers = 1, save_log = FALSE, save_plot = TRUE)
 }
 \arguments{
 \item{count_table}{A RNA-seq count matrix with genes on each row and samples
@@ -61,6 +62,12 @@ each replicate level in ggplot2_TPR_FPRPlot function. Options include
 to current working directory.}
 
 \item{num_workers}{Number of nodes to use for parallel computing the DE tests}
+
+\item{save_log}{Boolean. Whether to save runtime parameter in log file.
+Defualt to false.}
+
+\item{save_plot}{Boolean. Wehther to save ggplot2 plots to drive. Default to
+true.}
 }
 \value{
 A list of objects generated during the analysis is returned:
@@ -133,10 +140,9 @@ complete. If additional nodes are available, additional nodes can be
 employed by specifying the num_workers argument. Parallel computing
 requires BiocParallel package.
 
-All runtime parameters are saved in a log file named "erssa.log". The
-condition table used is saved as a csv file named "ERSSA_ConditionTable.csv".
-The list of objects returned is also saved to the disk for easy loading at
-at a later time for further modification.
+The results including list of DE genes and ggplot2 objects are returned.
+All runtime parameters can optionally be saved in a log file named
+"erssa.log".
 }
 \examples{
 # load example dataset containing 1000 genes, 4 replicates and 10 comb. per

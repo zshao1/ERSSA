@@ -3,6 +3,10 @@
 \alias{ERSSA NEWS}
 \encoding{UTF-8}
 
+\section{Version 0.99.6}{\itemize{
+\item Code improvements
+}}
+
 \section{Version 0.99.5}{\itemize{
 \item Increase font sizes in plots
 \item Add line of mean DEG discovery in interect plot
