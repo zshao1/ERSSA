@@ -35,7 +35,7 @@
 #' The generated differential expression results are then analyzed by several
 #' plotting functions briefly described here. ggplot2_dotplot function plots
 #' the trend in DE gene identification. ggplot2_marginPlot function plots
-#' the marginal increase in the number of DE genes as replicate level
+#' the marginal change in the number of DE genes as replicate level
 #' increases. ggplot2_intersectPlot function plots the number of DE genes that
 #' is common across combinations. ggplot2_TPR_FPRPlot function plots the TPR
 #' and FPR of DE detection using the full dataset's list of DE gene as the
@@ -93,7 +93,7 @@
 #' @param path The path to which the plots and results will be saved. Default
 #' to current working directory.
 #' @param num_workers Number of nodes to use for parallel computing the DE tests
-#' @param save_log Boolean. Whether to save runtime parameter in log file.
+#' @param save_log Boolean. Whether to save runtime parameters in log file.
 #' Defualt to false.
 #' @param save_plot Boolean. Wehther to save ggplot2 plots to drive. Default to
 #' true.

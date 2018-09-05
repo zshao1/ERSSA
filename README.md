@@ -1,7 +1,7 @@
 # ERSSA: Empirical RNA-seq Sample Size Analysis
 
-Date: 2018-08-28<br>
-Version: 0.99.6<br>
+Date: 2018-09-05<br>
+Version: 0.99.7<br>
 Author: Zixuan Shao and Julie Kornfield<br>
 Maintainer: Zixuan Shao (zixuanshao.zach@gmail.com)
 

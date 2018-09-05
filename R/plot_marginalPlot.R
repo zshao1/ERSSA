@@ -1,11 +1,11 @@
 #' @title Plot percent increase in detection of DE genes across replicate levels
 #'
 #' @description
-#' \code{ggplot2_marginPlot} function plots the percent increase in number of DE
+#' \code{ggplot2_marginPlot} function plots the percent change in number of DE
 #' genes identified at each step-wise increase in replicate level.
 #'
 #' @details
-#' The percent increase is calculated as (margin*100%)/(num. of DE genes at the
+#' The percent change is calculated as (margin*100%)/(num. of DE genes at the
 #' lower replicate level). The results are visualized as bar plots. Either mean
 #' or median can be used for the calculation.
 #'

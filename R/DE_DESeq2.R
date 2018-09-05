@@ -32,14 +32,13 @@
 #'  padj pass the cutoff. Default = 0.05.
 #' @param cutoff_Abs_logFC The cutoff in abs(log2FoldChange) for differential
 #' expression consideration. Genes with higher abs(log2FoldChange) pass
-#' the cutoff.
-#'  Default = 1.
+#' the cutoff. Default = 1.
 #' @param save_table Boolean. When set to TRUE, function will, in addition, save
 #' the generated DESeq2 result table as csv files. The files are saved on the
 #' drive in the working directory in a new folder named "ERSSA_DESeq2_table".
 #' Tables are saved separately by the replicate level. Default = FALSE.
 #'
-#' @return A list of list of vector. Top list contains elements corresponding to
+#' @return A list of list of vectors. Top list contains elements corresponding to
 #' replicate levels. Each child list contains elements corresponding to each
 #' combination at the respective replicate level. The child vectors contain
 #' differentially expressed gene names.
@@ -223,7 +222,7 @@ erssa_deseq2 = function(count_table.filtered=NULL, combinations=NULL,
 #' directory.
 #' @param num_workers Number of workers for parallel computing. Default=1.
 #'
-#' @return A list of list of vector. Top list contains elements corresponding to
+#' @return A list of list of vectors. Top list contains elements corresponding to
 #' replicate levels. Each child list contains elements corresponding to
 #' each combination at the respective replicate level. The child vectors
 #' contain differentially expressed gene names.

@@ -2,11 +2,11 @@
 #'
 #' @description
 #' \code{comb_gen} function takes the list of samples in each condition
-#' and calculate unique combination of sample names that allow
-#' subsampling at varying replicate number.
+#' and generate unique combination of sample names that allow
+#' subsampling at varying replicate numbers.
 #'
 #' @details
-#' At each replicate number, the total number of unique combination
+#' At each replicate number (2 to N-1), the total number of unique combination
 #' of samples is computed. For example, 10 condition A samples subsampled
 #' at replicate number of 2 has 45 unique combinations.
 #'
@@ -33,8 +33,7 @@
 #' condition (e.g. Control, Treatment).
 #' @param n_repetition The number of maximum unique combinations to generate
 #' at each replicate level. More tests will be performed with a bigger value,
-#' but run time also increases linearly. Default set to 30 unique combinations
-#' at maximum.
+#' but run time also increases linearly. Default set to 30 unique combinations.
 #'
 #' @return A list of character vectors containing sample combinations. Each
 #' element in the list corresponds to a replicate level. Each combination
@@ -103,9 +102,10 @@ comb_gen = function(condition_table=NULL, n_repetition=30){
         }
 
         # generate comb_rep number of combinations for condition 1
-        comb_cond1_list = c() #declare empty vector to store combinations
+        comb_cond1_list = vector(mode="character", length=comb_rep)
+        count = 0
 
-        while (length(comb_cond1_list)!=comb_rep){
+        while (count != comb_rep){
             # random samping without replacement
             comb_cond1 = sort(sample(cond1_name, rep))
             # collapse into one string
@@ -113,7 +113,8 @@ comb_gen = function(condition_table=NULL, n_repetition=30){
 
             if (!(comb_cond1_string %in% comb_cond1_list)) {
                 # add to combination list if string is unique
-                comb_cond1_list = c(comb_cond1_list, comb_cond1_string)
+                comb_cond1_list[count+1] = comb_cond1_string
+                count = count + 1
             }
         }
 
@@ -126,9 +127,10 @@ comb_gen = function(condition_table=NULL, n_repetition=30){
         }
 
         # generate comb_rep number of combinations for condition 2
-        comb_cond2_list = c() # declare empty vector to store combinations
+        comb_cond2_list = vector(mode="character", length=comb_rep)
+        count = 0
 
-        while (length(comb_cond2_list)!=comb_rep){
+        while (count != comb_rep){
             # random samping without replacement
             comb_cond2 = sort(sample(cond2_name, rep))
             # collapse into one string
@@ -136,7 +138,8 @@ comb_gen = function(condition_table=NULL, n_repetition=30){
 
             if (!(comb_cond2_string %in% comb_cond2_list)) {
                 # add to combination list if unique
-                comb_cond2_list = c(comb_cond2_list, comb_cond2_string)
+                comb_cond2_list[count+1] = comb_cond2_string
+                count = count + 1
             }
         }
 
@@ -148,9 +151,10 @@ comb_gen = function(condition_table=NULL, n_repetition=30){
         }
 
         # generate comb_rep number of combinations of condition 1 and 2
-        comb_merged_list = c() # declare empty vector to store combinations
+        comb_merged_list = vector(mode="character", length=comb_rep)
+        count = 0
 
-        while (length(comb_merged_list)!=comb_rep){
+        while (count != comb_rep){
             # random samping without replacement
             comb_merged = as.character(sample(comb_cond1_list, 1))
             comb_merged = c(comb_merged, as.character(sample(comb_cond2_list,1)))
@@ -159,7 +163,8 @@ comb_gen = function(condition_table=NULL, n_repetition=30){
 
             if (!(comb_merged_string %in% comb_merged_list)) {
                 # add to combination list if unique
-                comb_merged_list = c(comb_merged_list, comb_merged_string)
+                comb_merged_list[count+1] = comb_merged_string
+                count = count + 1
             }
         }
 

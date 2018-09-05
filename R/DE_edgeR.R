@@ -39,7 +39,7 @@
 #' @param path Path to which the files will be saved. Default to current working
 #' directory.
 #'
-#' @return A list of list of vector. Top list contains elements corresponding to
+#' @return A list of list of vectors. Top list contains elements corresponding to
 #' replicate levels. Each child list contains elements corresponding to each
 #' combination at the respective replicate level. The child vectors contain
 #' differentially expressed gene names.
@@ -228,7 +228,7 @@ erssa_edger = function(count_table.filtered=NULL, combinations=NULL,
 #' directory.
 #' @param num_workers Number of workers for parallel computing. Default=1.
 #'
-#' @return A list of list of vector. Top list contains elements corresponding to
+#' @return A list of list of vectors. Top list contains elements corresponding to
 #' replicate levels. Each child list contains elements corresponding to each
 #' combination at the respective replicate level. The child vectors contain
 #' differentially expressed gene names.

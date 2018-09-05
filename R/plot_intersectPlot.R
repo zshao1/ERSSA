@@ -2,7 +2,7 @@
 #'
 #' @description
 #' \code{ggplot2_intersectPlot} function generates and plots the list of
-#' differentially expressed (DE) genes that are commonly found in all
+#' differentially expressed (DE) genes that are found in all
 #' combinations at any particular replicate level. Often in small-scale
 #' RNA-seq experiments, the inclusion or exclusion of any paricular sample can
 #' result in a very different list of DE genes. To reduce the influence of any
