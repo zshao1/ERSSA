@@ -7,4 +7,5 @@
 Example condition table with two columns. Column 1 contains sample name,
 column 2 contains condition name. Use in conjuncture with count_table.
 A partial condition table containing 4 replicates each of heart and muscle.
+Used for testing purposes and to shorten run time.
 }

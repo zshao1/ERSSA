@@ -13,8 +13,7 @@ condition (e.g. Control, Treatment).}
 
 \item{n_repetition}{The number of maximum unique combinations to generate
 at each replicate level. More tests will be performed with a bigger value,
-but run time also increases linearly. Default set to 30 unique combinations
-at maximum.}
+but run time also increases linearly. Default set to 30 unique combinations.}
 }
 \value{
 A list of character vectors containing sample combinations. Each
@@ -24,11 +23,11 @@ by semicolon.
 }
 \description{
 \code{comb_gen} function takes the list of samples in each condition
-and calculate unique combination of sample names that allow
-subsampling at varying replicate number.
+and generate unique combination of sample names that allow
+subsampling at varying replicate numbers.
 }
 \details{
-At each replicate number, the total number of unique combination
+At each replicate number (2 to N-1), the total number of unique combination
 of samples is computed. For example, 10 condition A samples subsampled
 at replicate number of 2 has 45 unique combinations.
 

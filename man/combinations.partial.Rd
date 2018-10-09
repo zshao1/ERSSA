@@ -6,4 +6,5 @@
 \description{
 Generated with example sample set that contains 4 replicates each of heart
 and muscle from GTeX. 5 combinations generated per replicate level.
+Used for testing purposes and to shorten run time.
 }

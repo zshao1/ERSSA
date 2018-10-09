@@ -366,7 +366,7 @@ erssa_edger_parallel = function(count_table.filtered=NULL, combinations=NULL,
             return(rownames(DE_et_cutoff))
         }
 
-        param = SnowParam(num_workers = num_workers, type = "SOCK")
+        param = SnowParam(workers = num_workers, type = "SOCK")
 
         DE_genes_rl=bplapply(X=seq_along(comb_rl),
                              FUN=edger_par, BPPARAM = param,

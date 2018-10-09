@@ -6,7 +6,8 @@
 function}
 \description{
 A filtered version of the example count_table.partial.
-Contains 974 genes that passed the filter.
+Contains 974 genes that passed the filter. Used for testing purposes and
+to shorten run time.
 }
 \references{
 \url{https://jhubiostatistics.shinyapps.io/recount/}

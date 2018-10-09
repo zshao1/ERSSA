@@ -6,5 +6,5 @@
 \description{
 Example condition table with two columns. Column 1 contains sample name,
 column 2 contains condition name. Use in conjuncture with count_table.
-Contains 10 samples each from heart and muscle.
+Contains 10 GTEx samples each from heart and muscle.
 }

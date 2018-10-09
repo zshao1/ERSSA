@@ -358,7 +358,7 @@ erssa_deseq2_parallel = function(count_table.filtered=NULL, combinations=NULL,
             return(rownames(res_cutoff))
         }
 
-        param = SnowParam(num_workers = num_workers, type = "SOCK")
+        param = SnowParam(workers = num_workers, type = "SOCK")
 
         DE_genes_rl=bplapply(X=seq_along(comb_rl),
                              FUN=deseq2_par, BPPARAM = param,
