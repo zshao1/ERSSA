@@ -1,7 +1,7 @@
 Package: ERSSA
 Type: Package
 Title: Empirical RNA-seq Sample Size Analysis
-Version: 1.0.0
+Version: 1.1.0
 Date: 2018-10-09
 Author: Zixuan Shao [aut, cre]
 Maintainer: Zixuan Shao <Zixuanshao.zach@gmail.com>
