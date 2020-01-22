@@ -1,7 +1,7 @@
 # ERSSA: Empirical RNA-seq Sample Size Analysis
 
-Date: 2018-10-09<br>
-Version: 0.99.8<br>
+Date: 2020-01-21<br>
+Version: 1.5.1<br>
 Author: Zixuan Shao and Julie Kornfield<br>
 Maintainer: Zixuan Shao (zixuanshao.zach@gmail.com)
 
@@ -12,5 +12,8 @@ Base on the number of replicates already available, the algorithm subsamples at 
 
 When applied to RNA-seq data from studies including GTEx, ERSSA demonstrated proficiency in determining whether sufficient biological replicates have been included. Overall, ERSSA can be used as a flexible and easy-to-use tool that offers an alternative approach to identify the appropriate sample size in comparative RNA-seq studies.
 
+### Installation
+ERSSA can now be easily installed following instruction at [bioconductor](http://bioconductor.org/packages/release/bioc/html/ERSSA.html).
+
 ### Usage
-See [ERSSA vignette](./vignettes/ERSSA.html) for detailed usage information.
+See [ERSSA vignette](http://bioconductor.org/packages/release/bioc/vignettes/ERSSA/inst/doc/ERSSA.html) for detailed usage information.

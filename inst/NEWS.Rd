@@ -3,6 +3,11 @@
 \alias{ERSSA NEWS}
 \encoding{UTF-8}
 
+\section{Version 1.5.1}{\itemize{
+\item Better implementation of jitter plot in ggplot2_dotplot
+\item plot_marginalPlot set to plot median as default, previously set to plot mean
+}}
+
 \section{Version 0.99.8}{\itemize{
 \item Fix a bug in calling BiocParallel
 }}

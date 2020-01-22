@@ -4,12 +4,24 @@
 \alias{erssa}
 \title{Empirical RNA-seq Sample Size Analysis}
 \usage{
-erssa(count_table = NULL, condition_table = NULL,
-  DE_ctrl_cond = NULL, filter_cutoff = 1, counts_filtered = FALSE,
-  comb_gen_repeat = 30, DE_software = "edgeR", DE_cutoff_stat = 0.05,
-  DE_cutoff_Abs_logFC = 1, DE_save_table = FALSE,
-  marginalPlot_stat = "mean", TPR_FPR_stat = "mean", path = ".",
-  num_workers = 1, save_log = FALSE, save_plot = TRUE)
+erssa(
+  count_table = NULL,
+  condition_table = NULL,
+  DE_ctrl_cond = NULL,
+  filter_cutoff = 1,
+  counts_filtered = FALSE,
+  comb_gen_repeat = 30,
+  DE_software = "edgeR",
+  DE_cutoff_stat = 0.05,
+  DE_cutoff_Abs_logFC = 1,
+  DE_save_table = FALSE,
+  marginalPlot_stat = "median",
+  TPR_FPR_stat = "mean",
+  path = ".",
+  num_workers = 1,
+  save_log = FALSE,
+  save_plot = TRUE
+)
 }
 \arguments{
 \item{count_table}{A RNA-seq count matrix with genes on each row and samples
@@ -52,7 +64,7 @@ can be saved to the drive for further analysis. Default setting does not
 save the results to save drive space. Default = FALSE.}
 
 \item{marginalPlot_stat}{The statistic used for plotting of values in
-marginal plot function. Options include 'mean', 'median'. Default='mean'.}
+marginal plot function. Options include 'mean', 'median'. Default='median'.}
 
 \item{TPR_FPR_stat}{The statistics used to summarize TPR and FPR at
 each replicate level in ggplot2_TPR_FPRPlot function. Options include

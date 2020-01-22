@@ -4,9 +4,16 @@
 \alias{erssa_edger}
 \title{Run edgeR for computed sample combinations}
 \usage{
-erssa_edger(count_table.filtered = NULL, combinations = NULL,
-  condition_table = NULL, control = NULL, cutoff_stat = 0.05,
-  cutoff_Abs_logFC = 1, save_table = FALSE, path = ".")
+erssa_edger(
+  count_table.filtered = NULL,
+  combinations = NULL,
+  condition_table = NULL,
+  control = NULL,
+  cutoff_stat = 0.05,
+  cutoff_Abs_logFC = 1,
+  save_table = FALSE,
+  path = "."
+)
 }
 \arguments{
 \item{count_table.filtered}{Count table pre-filtered to remove non- to

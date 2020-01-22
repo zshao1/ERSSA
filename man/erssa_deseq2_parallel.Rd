@@ -4,10 +4,17 @@
 \alias{erssa_deseq2_parallel}
 \title{Run DESeq2 for computed sample combinations with parallel computing}
 \usage{
-erssa_deseq2_parallel(count_table.filtered = NULL, combinations = NULL,
-  condition_table = NULL, control = NULL, cutoff_stat = 0.05,
-  cutoff_Abs_logFC = 1, save_table = FALSE, path = ".",
-  num_workers = 1)
+erssa_deseq2_parallel(
+  count_table.filtered = NULL,
+  combinations = NULL,
+  condition_table = NULL,
+  control = NULL,
+  cutoff_stat = 0.05,
+  cutoff_Abs_logFC = 1,
+  save_table = FALSE,
+  path = ".",
+  num_workers = 1
+)
 }
 \arguments{
 \item{count_table.filtered}{Count table pre-filtered to remove non- to low-

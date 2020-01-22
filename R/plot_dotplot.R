@@ -77,9 +77,8 @@ ggplot2_dotplot = function(deg=NULL, path='.', save_plot=TRUE){
 
     # plot DE genes at each replicate level
     gg = ggplot(deg_df, aes(rep_level, num_DEG)) +
-        geom_boxplot() +
-        geom_dotplot(binaxis='y', stackdir='center',dotsize=1.5,
-                     binwidth = max(deg_df$num_DEG)/150) +
+        geom_boxplot(outlier.shape = NA) +
+        geom_jitter(height = 0, width=0.1) +
         theme_bw(base_size=14) +
         geom_hline(aes(yintercept=full_num_DEG,
                        color = "Full dataset"), size=0.75,

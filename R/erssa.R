@@ -86,7 +86,7 @@
 #' can be saved to the drive for further analysis. Default setting does not
 #' save the results to save drive space. Default = FALSE.
 #' @param marginalPlot_stat The statistic used for plotting of values in
-#' marginal plot function. Options include 'mean', 'median'. Default='mean'.
+#' marginal plot function. Options include 'mean', 'median'. Default='median'.
 #' @param TPR_FPR_stat The statistics used to summarize TPR and FPR at
 #' each replicate level in ggplot2_TPR_FPRPlot function. Options include
 #' 'mean', 'median'. Default = 'mean'.
@@ -156,7 +156,7 @@ erssa = function(count_table=NULL, condition_table=NULL, DE_ctrl_cond=NULL,
                  filter_cutoff=1, counts_filtered=FALSE,
                  comb_gen_repeat=30, DE_software='edgeR', DE_cutoff_stat = 0.05,
                  DE_cutoff_Abs_logFC = 1, DE_save_table=FALSE,
-                 marginalPlot_stat='mean', TPR_FPR_stat='mean',
+                 marginalPlot_stat='median', TPR_FPR_stat='mean',
                  path='.', num_workers=1, save_log=FALSE,
                  save_plot=TRUE){
 
