@@ -23,7 +23,7 @@ Imports:
 	utils
 Suggests: BiocStyle, knitr, rmarkdown
 VignetteBuilder: knitr
-biocViews: GeneExpression, Transcription, DifferentialExpression, RNASeq, MultipleComparison, QualityControl
+biocViews: ImmunoOncology, GeneExpression, Transcription, DifferentialExpression, RNASeq, MultipleComparison, QualityControl
 License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true
